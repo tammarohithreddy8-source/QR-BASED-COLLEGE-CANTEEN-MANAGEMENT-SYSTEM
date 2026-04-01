@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Your Orders - eCanteen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#ecf0f1',
+              100: '#d6dbdf',
+              200: '#bdc3c7',
+              300: '#a4b0bd',
+              400: '#7f8c8d',
+              500: '#2c3e50',
+              600: '#34495e',
+              700: '#2c3e50',
+              800: '#2c3e50',
+              900: '#2c3e50',
+            },
+            accent: {
+              50: '#e8f4fc',
+              100: '#d0e9f9',
+              200: '#a1d3f3',
+              300: '#72bded',
+              400: '#43a7e7',
+              500: '#2980b9',
+              600: '#3498db',
+              700: '#2980b9',
+              800: '#2980b9',
+              900: '#2980b9',
+            },
+            success: {
+              50: '#e8f6f3',
+              100: '#d0ece7',
+              200: '#a2d9cf',
+              300: '#73c6b6',
+              400: '#45b39d',
+              500: '#16a085',
+              600: '#138d75',
+              700: '#117a65',
+              800: '#0e6655',
+              900: '#0b5345',
+            },
+            warning: {
+              50: '#fef5e7',
+              100: '#fdebd0',
+              200: '#fad7a0',
+              300: '#f8c471',
+              400: '#f5b041',
+              500: '#f39c12',
+              600: '#d68910',
+              700: '#b9770e',
+              800: '#9c640c',
+              900: '#7e5109',
+            },
+            danger: {
+              50: '#fdedec',
+              100: '#fadbd8',
+              200: '#f5b7b1',
+              300: '#f1948a',
+              400: '#ec7063',
+              500: '#e74c3c',
+              600: '#cb4335',
+              700: '#b03a2e',
+              800: '#943126',
+              900: '#78281f',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-in-out',
+            'slide-down': 'slideDown 0.3s ease-out',
+            'slide-in-left': 'slideInLeft 0.3s ease-out',
+            'pulse': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'toast-slide-in': 'toastSlideIn 0.5s ease-out',
+            'toast-slide-out': 'toastSlideOut 0.5s ease-in',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideDown: {
+              '0%': { transform: 'translateY(-10px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+            slideInLeft: {
+              '0%': { transform: 'translateX(-20px)', opacity: '0' },
+              '100%': { transform: 'translateX(0)', opacity: '1' },
+            },
+            pulse: {
+              '0%, 100%': { opacity: '1' },
+              '50%': { opacity: '0.5' },
+            },
+            toastSlideIn: {
+              '0%': { transform: 'translateX(100%)', opacity: '0' },
+              '100%': { transform: 'translateX(0)', opacity: '1' },
+            },
+            toastSlideOut: {
+              '0%': { transform: 'translateX(0)', opacity: '1' },
+              '100%': { transform: 'translateX(100%)', opacity: '0' },
+            },
+          },
+        },
+      },
+      darkMode: 'class',
+    }
+  </script>
+  
+  <style>
+    /* Hide elements using this class */
+.hidden {
+  display: none;
+}
+
+/* Form container styling */
+#payOnlineForm {
+  background-color: #fff;
+  padding: 20px 25px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.15);
+  max-width: 400px;
+  margin: auto;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Labels */
+#payOnlineForm label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Inputs and Select */
+#payOnlineForm input[type="text"],
+#payOnlineForm input[type="password"],
+#payOnlineForm select {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+#payOnlineForm input:focus,
+#payOnlineForm select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Wallet section styling */
+#walletSection {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #f6f6f6;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  color: #333;
+  font-size: 14px;
+}
+
+/* NetBanking section spacing */
+#netBankingSection input {
+  margin-bottom: 10px;
+}
+
+/* Submit button styling */
+#payOnlineForm button[type="submit"] {
+  margin-top: 20px;
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#payOnlineForm button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+    /* Sidebar styles */
+    .sidebar-collapsed {
+      width: 5rem !important;
+    }
+    .sidebar-collapsed .logo-text,
+    .sidebar-collapsed .nav-text,
+    .sidebar-collapsed .profile-text {
+      display: none !important;
+    }
+    .sidebar-collapsed .nav-icon,
+    .sidebar-collapsed .profile-icon {
+      margin-right: 0 !important;
+    }
+    .sidebar-collapsed .nav-link {
+      justify-content: center !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    .sidebar-collapsed .profile {
+      justify-content: center !important;
+    }
+    
+    /* Mobile sidebar */
+    .mobile-sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    .mobile-sidebar.open {
+      transform: translateX(0);
+    }
+    
+    /* Custom scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #a4b0bd;
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #7f8c8d;
+    }
+    
+    /* Smooth transitions */
+    .transition-slow {
+      transition: all 0.3s ease;
+    }
+    .transition-medium {
+      transition: all 0.2s ease;
+    }
+    .transition-fast {
+      transition: all 0.1s ease;
+    }
+    
+    .card-hover {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Active nav link */
+    .nav-link.active {
+      background-color: rgba(41, 128, 185, 0.1);
+      color: #2980b9;
+      border-left: 4px solid #2980b9;
+    }
+    
+    /* Modern shadow */
+    .modern-shadow {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+    
+    /* Better focus states */
+    .focus-visible {
+      outline: 2px solid #2980b9;
+      outline-offset: 2px;
+    }
+    
+    /* Backdrop for mobile sidebar */
+    .backdrop {
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 30;
+    }
+    
+    /* Profile image */
+    .profile-img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #2980b9;
+      box-shadow: 0 0 6px #2980b9;
+    }
+    
+    /* Dark mode styles */
+    .dark .bg-gradient-to-br {
+      background: linear-gradient(to bottom right, #2c3e50, #34495e);
+    }
+    .dark .bg-white {
+      background-color: #1a202c;
+    }
+    .dark .text-primary-800 {
+      color: #e2e8f0;
+    }
+    .dark .text-primary-700 {
+      color: #cbd5e1;
+    }
+    .dark .text-primary-600 {
+      color: #a0aec0;
+    }
+    .dark .text-primary-500 {
+      color: #a0aec0;
+    }
+    .dark .bg-primary-100 {
+      background-color: #2d3748;
+    }
+    .dark .bg-primary-200 {
+      background-color: #4a5568;
+    }
+    .dark .bg-accent-50 {
+      background-color: #2b6cb0;
+    }
+    .dark .bg-warning-50 {
+      background-color: #b7791f;
+    }
+    .dark .bg-success-50 {
+      background-color: #2f855a;
+    }
+    .dark .border-primary-100 {
+      border-color: #4a5568;
+    }
+    .dark .border-primary-200 {
+      border-color: #2d3748;
+    }
+    .dark .text-accent-600 {
+      color: #90cdf4;
+    }
+    .dark .text-warning-600 {
+      color: #f6ad55;
+    }
+    .dark .text-success-600 {
+      color: #68d391;
+    }
+    
+    /* Notification badge */
+    .notification-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #e74c3c;
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      border-radius: 50%;
+      padding: 2px 6px;
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      min-width: 200px;
+      max-width: 300px;
+      background-color: #2f855a;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toast.error {
+      background-color: #e74c3c;
+    }
+    
+    /* Skeleton loader */
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: skeleton-loading 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes skeleton-loading {
+      0% {
+        background-position: 200% 0;
+      }
+      100% {
+        background-position: -200% 0;
+      }
+    }
+    
+    /* Status Badge */
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .status-pending { background-color: #f39c12; color: white; }
+    .status-confirmed { background-color: #3498db; color: white; }
+    .status-preparing { background-color: #f1c40f; color: #2c3e50; }
+    .status-prepared { background-color: #2ecc71; color: white; }
+    .status-delivered { background-color: #27ae60; color: white; }
+    .status-cancelled { background-color: #e74c3c; color: white; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-primary-50 to-primary-100 bg-fixed min-h-screen font-sans antialiased">
+  <!-- Toast Notification Container -->
+  <div id="toastContainer"></div>
+
+  <!-- Mobile Sidebar Backdrop -->
+  <div id="mobileBackdrop" class="fixed inset-0 backdrop hidden lg:hidden z-30"></div>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen bg-primary-800 text-white shadow-xl transition-slow lg:translate-x-0 mobile-sidebar">
+    <div class="flex flex-col h-full">
+      <!-- Logo -->
+      <div class="flex items-center justify-between px-6 py-5">
+        <div class="flex items-center space-x-3">
+          <i class='bx bx-food-menu text-2xl text-accent-400'></i>
+          <span class="logo-text text-xl font-bold">eCanteen Student</span>
+        </div>
+        <button id="sidebarToggle" class="text-primary-200 hover:text-white focus:outline-none transition-medium focus-visible" aria-label="Toggle sidebar">
+          <i class='bx bx-chevron-left text-2xl'></i>
+        </button>
+      </div>
+      
+      <!-- Navigation -->
+      <nav class="flex-1 px-4 py-2 overflow-y-auto custom-scrollbar">
+        <ul class="space-y-2">
+          <li>
+            <a href="{% url 'student_dashboard' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link focus-visible">
+              <i class='bx bx-home nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'view_menu' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link focus-visible">
+              <i class='bx bx-bowl-hot nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">View Menu</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'order_status' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link active focus-visible">
+              <i class='bx bx-cart nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">Order Status</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'student_feedback' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link focus-visible">
+              <i class='bx bx-comment nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">Feedback</span>
+            </a>
+          </li>
+         
+        </ul>
+      </nav>
+      
+      <!-- Profile -->
+      <div class="px-4 py-4 border-t border-primary-700">
+        <div class="relative">
+          <button id="profileBtn" class="flex items-center w-full px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium focus:outline-none focus-visible profile" aria-label="Toggle profile menu" aria-haspopup="true" aria-expanded="false">
+            {% if student.profile_picture %}
+              <img src="{{ student.profile_picture.url }}" class="profile-img mr-3" alt="Profile Picture" />
+            {% else %}
+              <i class='bx bx-user profile-icon mr-3 text-lg'></i>
+            {% endif %}
+            <span class="profile-text text-sm font-medium">{{ student.name }}</span>
+            <i class='bx bx-chevron-down ml-auto text-lg'></i>
+          </button>
+          <!-- Profile Dropdown -->
+          <div id="profileDropdown" class="hidden absolute bottom-full left-0 mb-2 w-full bg-white rounded-lg shadow-xl z-50 border border-primary-200 animate-slide-down">
+            <div class="py-1">
+              <a href="{% url 'student_profile' %}" class="block w-full text-left px-4 py-2 text-sm text-primary-600 hover:bg-primary-50 transition-medium focus-visible">Profile</a>
+              <form method="POST" action="{% url 'student_logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-danger-600 hover:bg-primary-50 transition-medium focus-visible">Logout</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  
+  <!-- Mobile Sidebar Toggle -->
+  <button id="mobileSidebarToggle" class="fixed top-4 left-4 z-50 p-2 rounded-md bg-primary-700 text-white shadow-lg focus:outline-none focus-visible lg:hidden" aria-label="Toggle mobile sidebar">
+    <i class='bx bx-menu text-2xl'></i>
+  </button>
+  
+  <!-- Main Content -->
+  <main class="ml-0 lg:ml-64 transition-slow">
+    <div class="px-4 sm:px-6 py-6">
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-primary-800">Your Orders</h1>
+          <p id="greeting" class="text-sm text-primary-600 mt-1"></p>
+        </div>
+        <div class="flex items-center space-x-4">
+          <!-- Notification Bell -->
+          <div class="relative">
+            
+            <!-- Notifications Dropdown -->
+            <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-50 border border-primary-200 animate-slide-down custom-scrollbar max-h-96 overflow-y-auto">
+              <div class="py-1">
+                {% for notification in notifications %}
+                  <div class="px-4 py-2 text-sm text-primary-700 hover:bg-primary-50 transition-medium">
+                    {{ notification.message }}
+                    <p class="text-xs text-primary-600 mt-1">{{ notification.created_at|date:"Y-m-d H:i" }}</p>
+                  </div>
+                {% empty %}
+                  <div class="px-4 py-2 text-sm text-primary-700">No new notifications.</div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div id="clock" class="text-sm font-medium text-primary-600 bg-primary-100 px-3 py-1 rounded-md"></div>
+          <button id="darkModeToggle" class="p-2 rounded-md bg-primary-100 text-primary-600 hover:bg-primary-200 transition-medium focus-visible" aria-label="Toggle dark mode">
+            <i class='bx bx-moon text-lg'></i>
+          </button>
+        </div>
+      </div>
+      {% if messages %}
+        <div class="mb-6 p-4 bg-white rounded-lg shadow-sm border-l-4 border-accent-500 animate-fade-in modern-shadow">
+          {% for msg in messages %}
+            <p class="text-primary-700 font-medium">{{ msg }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+      <!-- Filter -->
+      <form method="get" class="mb-6">
+        <label for="status-select" class="text-primary-700 font-medium mr-2">Filter by status:</label>
+        <select name="status" id="status-select" class="px-4 py-2 border border-primary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white shadow-sm hover:bg-primary-50 transition-medium" onchange="this.form.submit()">
+          <option value="" {% if not status_filter %}selected{% endif %}>All</option>
+          <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+          <option value="confirmed" {% if status_filter == 'confirmed' %}selected{% endif %}>Confirmed</option>
+          
+        </select>
+      </form>
+      <!-- Orders List -->
+      {% if orders %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% for order in orders %}
+            <div class="bg-white rounded-xl overflow-hidden transition-medium card-hover border border-gray-100 hover:border-accent-200">
+              <div class="p-4 sm:p-5 bg-gradient-to-br from-white to-primary-50">
+                <!-- Header -->
+                <div class="flex justify-between items-center mb-4">
+                  <h3 class="text-lg font-semibold text-primary-800">Order #{{ order.id }}</h3>
+                  <p class="text-sm text-primary-600">{{ order.created_at|date:"Y-m-d H:i" }}</p>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <p class="text-sm text-primary-600"><strong>Total Price:</strong> ₹{{ order.total_price|floatformat:2 }}</p>
+                    <p class="text-sm font-semibold">
+                      <strong>Status:</strong>
+                      <span class="status-badge status-{{ order.status }}">{{ order.status|title }}</span>
+                    </p>
+                    <p class="text-sm text-primary-600"><strong>Payment Method:</strong> {{ order.get_payment_method_display|default:"Not specified" }}</p>
+                    {% if order.preparation_time %}
+                    <p class="text-sm text-primary-600">
+                      <strong>Estimated Preparation Time:</strong> {{ order.preparation_time }} minutes
+                    </p>
+                  {% elif order.prep_time %}
+                    <p class="text-sm text-primary-600">
+                      <strong>Estimated Preparation Time:</strong> {{ order.prep_time }} minutes
+                    </p>
+                  {% else %}
+                    <p class="text-sm text-primary-600">
+                      <strong>Estimated Preparation Time:</strong> Not specified
+                    </p>
+                  {% endif %}
+                  </div>
+                  <!-- QR Code -->
+                  <div class="flex justify-end">
+                    {% if order.qr_code %}
+                      <img src="{{ order.qr_code.url }}" alt="QR Code for Order {{ order.id }}" class="w-24 h-24 object-contain rounded-md border border-gray-200">
+                    {% else %}
+                      <div class="skeleton w-24 h-24 rounded-md"></div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- Order Items -->
+                <div class="mb-4">
+                  <h4 class="text-sm font-semibold text-primary-800 mb-2">Items Ordered:</h4>
+                  {% if order.items.all %}
+                    <ul class="space-y-2">
+                      {% for item in order.items.all %}
+                        <li class="flex items-center gap-3 p-2 bg-gray-50 rounded-md hover:bg-gray-100 transition-medium">
+                          {% if item.item.image %}
+                            <img src="{{ item.item.image.url }}" alt="{{ item.item.name }}" class="w-12 h-12 object-cover rounded-md">
+                          {% else %}
+                            <div class="skeleton w-12 h-12 rounded-md"></div>
+                          {% endif %}
+                          <div>
+                            <p class="text-sm text-primary-600">{{ item.item.name }}</p>
+                            <p class="text-sm text-primary-600">Qty: {{ item.quantity }} | ₹{{ item.price|floatformat:2 }}</p>
+                          </div>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  {% else %}
+                    <p class="text-sm text-primary-600">No items found.</p>
+                  {% endif %}
+                </div>
+
+                <!-- Actions -->
+                <div class="flex flex-wrap items-center gap-2">
+                  {% if order.payment_method == 'COD' and order.status == 'pending' %}
+                    <button type="button" onclick="openPayOnlineModal({{ order.id }})" class="px-3 py-1 bg-accent-500 text-white rounded-md hover:bg-accent-600 transition-medium focus-visible text-sm" title="Pay online for this order">
+                      Pay Online
+                    </button>
+                  {% endif %}
+                  {% if order.can_cancel %}
+                    <form method="POST" action="{% url 'cancel_order' order.id %}" class="inline">
+                      {% csrf_token %}
+                      <button type="submit" class="px-3 py-1 bg-danger-500 text-white rounded-md hover:bg-danger-600 transition-medium focus-visible text-sm" title="Cancel this order">
+                        Cancel Order
+                      </button>
+                    </form>
+                    {% if order.remaining_seconds > 0 %}
+                      <p class="text-sm text-warning-600">Cancel within {{ order.remaining_seconds }}s</p>
+                    {% endif %}
+                  {% endif %}
+                  <a href="{% url 'reorder' order.id %}" class="px-3 py-1 bg-success-500 text-white rounded-md hover:bg-success-600 transition-medium focus-visible text-sm" title="Reorder this order">
+                    Reorder
+                  </a>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="bg-white p-6 rounded-xl shadow-sm modern-shadow text-center animate-fade-in">
+          <p class="text-primary-700 font-medium">You have no orders.</p>
+          <a href="{% url 'view_menu' %}" class="mt-4 inline-block px-4 py-2 bg-accent-500 text-white rounded-md hover:bg-accent-600 transition-medium">Browse Menu</a>
+        </div>
+      {% endif %}
+
+      <!-- Pay Online Modal -->
+      <div id="payOnlineModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-md w-full max-w-md shadow-xl animate-fade-in">
+          <form id="payOnlineForm" method="post">
+            {% csrf_token %}
+            <input type="hidden" id="modalOrderId" name="order_id" />
+          
+            <label>Select Payment Method:</label>
+            <select name="payment_method" onchange="showExtraFields(this.value)">
+              <option value="">-- Select --</option>
+              <option value="Wallet">Wallet</option>
+              <option value="Netbanking">Netbanking</option>
+            </select>
+          
+            <!-- Wallet Section -->
+            <div id="walletSection" class="extra-fields hidden">
+              <p>Your wallet balance: ₹{{ student.wallet_balance }}</p>
+            </div>
+          
+            <!-- NetBanking Section -->
+            <div id="netBankingSection" class="extra-fields hidden">
+              <label>NetBanking Username</label>
+              <input type="text" name="netbank_username" class="input" required />
+          
+              <label>NetBanking Password</label>
+              <input type="password" name="netbank_password" class="input" required />
+            </div>
+          
+            <button type="submit">Pay</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      {% if orders.has_other_pages %}
+        <nav aria-label="Page navigation" class="mt-8 flex justify-center">
+          <ul class="flex gap-1 items-center">
+            {% if orders.has_previous %}
+              <li>
+                <a href="?{% if status_filter %}status={{ status_filter }}&{% endif %}page={{ orders.previous_page_number }}"
+                   class="px-3 py-1 bg-accent-500 text-white rounded-md hover:bg-accent-600 transition-medium focus-visible"
+                   aria-label="Previous page">
+                  <i class='bx bx-chevron-left'></i>
+                </a>
+              </li>
+            {% else %}
+              <li class="px-3 py-1 text-primary-300 cursor-not-allowed"><i class='bx bx-chevron-left'></i></li>
+            {% endif %}
+            {% for num in orders.paginator.page_range %}
+              {% if orders.number == num %}
+                <li><span class="px-3 py-1 bg-primary-500 text-white rounded-md font-bold">{{ num }}</span></li>
+              {% elif num > orders.number|add:'-2' and num < orders.number|add:'2' %}
+                <li>
+                  <a href="?{% if status_filter %}status={{ status_filter }}&{% endif %}page={{ num }}"
+                     class="px-3 py-1 bg-accent-100 text-accent-600 rounded-md hover:bg-accent-200 transition-medium focus-visible">{{ num }}</a>
+                </li>
+              {% elif num == orders.paginator.page_range|first or num == orders.paginator.page_range|last %}
+                <li>
+                  <a href="?{% if status_filter %}status={{ status_filter }}&{% endif %}page={{ num }}"
+                     class="px-3 py-1 bg-accent-100 text-accent-600 rounded-md hover:bg-accent-200 transition-medium focus-visible">{{ num }}</a>
+                </li>
+              {% elif num == orders.number|add:'-3' or num == orders.number|add:'3' %}
+                <li><span class="px-1">...</span></li>
+              {% endif %}
+            {% endfor %}
+            {% if orders.has_next %}
+              <li>
+                <a href="?{% if status_filter %}status={{ status_filter }}&{% endif %}page={{ orders.next_page_number }}"
+                   class="px-3 py-1 bg-accent-500 text-white rounded-md hover:bg-accent-600 transition-medium focus-visible"
+                   aria-label="Next page">
+                  <i class='bx bx-chevron-right'></i>
+                </a>
+              </li>
+            {% else %}
+              <li class="px-3 py-1 text-primary-300 cursor-not-allowed"><i class='bx bx-chevron-right'></i></li>
+            {% endif %}
+          </ul>
+        </nav>
+      {% endif %}
+    </div>
+  </main>
+
+  <!-- Wallet Payment Modal -->
+  <div id="walletPaymentModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 animate-fade-in">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold text-primary-800">Add Money to Wallet</h2>
+        <button id="closeWalletPaymentModal" class="text-primary-600 hover:text-danger-600">
+          <i class='bx bx-x text-2xl'></i>
+        </button>
+      </div>
+      <form id="dummyPaymentForm" method="POST" action="{% url 'add_money_wallet' %}">
+        {% csrf_token %}
+        <label for="paymentAmount" class="block text-sm font-medium text-primary-700 mb-1">Enter Amount (₹)</label>
+        <input
+          type="number"
+          id="paymentAmount"
+          name="amount"
+          required
+          min="1"
+          class="w-full px-4 py-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-500"
+          placeholder="E.g., 100"
+        />
+        <div class="mb-4">
+          <p class="text-sm text-primary-700 mb-2">Payment Method</p>
+          <div class="space-y-2">
+            <label class="flex items-center space-x-2">
+              <input type="radio" name="payment_method" value="UPI" required class="text-accent-500 focus:ring-accent-500" />
+              <span class="text-sm text-primary-600">UPI</span>
+            </label>
+            <label class="flex items-center space-x-2">
+              <input type="radio" name="payment_method" value="Card" class="text-accent-500 focus:ring-accent-500" />
+              <span class="text-sm text-primary-600">Credit/Debit Card</span>
+            </label>
+            <label class="flex items-center space-x-2">
+              <input type="radio" name="payment_method" value="Netbanking" class="text-accent-500 focus:ring-accent-500" />
+              <span class="text-sm text-primary-600">Net Banking</span>
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="w-full bg-accent-500 text-white px-4 py-2 rounded-md hover:bg-accent-600 transition-medium">
+          Proceed to Pay
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Open Pay Online Modal
+    function openPayOnlineModal(orderId) {
+      const modal = document.getElementById('payOnlineModal');
+      const form = document.getElementById('payOnlineForm');
+      const orderIdInput = document.getElementById('modalOrderId');
+  
+      if (modal && form && orderIdInput) {
+        modal.classList.remove('hidden');
+        orderIdInput.value = orderId;
+        form.action = `/pay-online/${orderId}/`;
+      } else {
+        console.error('Modal or form not found in DOM.');
+      }
+    }
+  
+    // Close Pay Online Modal with SweetAlert confirmation
+    function closePayOnlineModal() {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to cancel the payment?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, cancel it',
+        cancelButtonText: 'No, keep it',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.getElementById('payOnlineModal').classList.add('hidden');
+        }
+      });
+    }
+  
+    // Show extra payment fields
+    function showExtraFields(method) {
+      document.querySelectorAll('.extra-fields').forEach(el => el.classList.add('hidden'));
+      if (method === 'Wallet') document.getElementById('walletSection')?.classList.remove('hidden');
+      if (method === 'Netbanking') document.getElementById('netBankingSection')?.classList.remove('hidden');
+    }
+  
+    // Submit Pay Online form via AJAX
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('payOnlineForm');
+  
+      if (form) {
+        form.addEventListener('submit', async function (e) {
+          e.preventDefault();
+  
+          const formData = new FormData(form);
+          const csrfToken = formData.get('csrfmiddlewaretoken');
+  
+          try {
+            const response = await fetch(form.action, {
+              method: 'POST',
+              body: formData,
+              headers: { 'X-CSRFToken': csrfToken }
+            });
+  
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+              throw new Error('Invalid response format');
+            }
+  
+            const data = await response.json();
+            if (data.success) {
+              showToast(data.message || 'Payment successful!');
+              document.getElementById('payOnlineModal').classList.add('hidden');
+              setTimeout(() => window.location.reload(), 1000);
+            } else {
+              showToast(data.error || 'Payment failed.', 'error');
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            showToast('Something went wrong. Please try again.', 'error');
+          }
+        });
+      }
+  
+      // Cancel Order with AJAX
+      document.querySelectorAll('form[action*="cancel_order"]').forEach(form => {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const formData = new FormData(form);
+          try {
+            const response = await fetch(form.action, {
+              method: 'POST',
+              headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+              },
+              body: formData,
+            });
+            const result = await response.json();
+            if (result.success) {
+              showToast('Order cancelled successfully!', 'success');
+              setTimeout(() => location.reload(), 2000);
+            } else {
+              showToast('Failed to cancel order.', 'error');
+            }
+          } catch (error) {
+            showToast('Error cancelling order.', 'error');
+          }
+        });
+      });
+    });
+  
+    // Toast Notification
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type === 'error' ? 'error' : ''} animate-toast-slide-in`;
+      toast.innerHTML = `<i class='bx bx-info-circle'></i><span>${message}</span>`;
+      const container = document.getElementById('toastContainer');
+      if (container) container.appendChild(toast);
+  
+      setTimeout(() => {
+        toast.classList.remove('animate-toast-slide-in');
+        toast.classList.add('animate-toast-slide-out');
+        setTimeout(() => toast.remove(), 500);
+      }, 3000);
+    }
+  
+    // Greeting and Clock
+    function updateClockAndGreeting() {
+      const now = new Date();
+      const options = { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+      document.getElementById('clock').textContent = now.toLocaleTimeString('en-IN', options);
+  
+      const hours = now.getHours();
+      const greeting = hours < 12 ? 'Good Morning' : hours < 18 ? 'Good Afternoon' : 'Good Evening';
+      document.getElementById('greeting').textContent = `${greeting}, {{ user.get_full_name|default:user.username }}!`;
+    }
+    updateClockAndGreeting();
+    setInterval(updateClockAndGreeting, 1000);
+  
+    // Dark Mode Toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      darkModeToggle.innerHTML = isDark ? '<i class="bx bx-sun text-lg"></i>' : '<i class="bx bx-moon text-lg"></i>';
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+    darkModeToggle.addEventListener('click', toggleDarkMode);
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark');
+      darkModeToggle.innerHTML = '<i class="bx bx-sun text-lg"></i>';
+    }
+  
+    // Sidebar Toggle Logic
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
+    const mobileBackdrop = document.getElementById('mobileBackdrop');
+  
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('sidebar-collapsed');
+      const main = document.querySelector('main');
+      if (sidebar.classList.contains('sidebar-collapsed')) {
+        main.classList.remove('lg:ml-64');
+        main.classList.add('lg:ml-20');
+      } else {
+        main.classList.remove('lg:ml-20');
+        main.classList.add('lg:ml-64');
+      }
+    });
+  
+    mobileSidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      mobileBackdrop.classList.toggle('hidden');
+      document.body.classList.toggle('overflow-hidden');
+    });
+  
+    mobileBackdrop.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      mobileBackdrop.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    });
+  
+    // Highlight active nav links
+    const currentPath = window.location.pathname;
+    document.querySelectorAll('.nav-link').forEach(link => {
+      if (link.getAttribute('href') === currentPath) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  
+    // Profile Dropdown
+    const profileBtn = document.getElementById('profileBtn');
+    const profileDropdown = document.getElementById('profileDropdown');
+  
+    profileBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      profileDropdown?.classList.toggle('hidden');
+      profileBtn.setAttribute('aria-expanded', !profileDropdown.classList.contains('hidden'));
+    });
+  
+    document.addEventListener('click', (e) => {
+      if (!profileDropdown.contains(e.target) && !profileBtn.contains(e.target)) {
+        profileDropdown.classList.add('hidden');
+        profileBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  
+    // Wallet Modal Logic
+    const walletBtn = document.getElementById('openWalletModal');
+    const walletModal = document.getElementById('walletPaymentModal');
+    const closeWalletBtn = document.getElementById('closeWalletPaymentModal');
+  
+    walletBtn?.addEventListener('click', (e) => {
+      e.preventDefault();
+      walletModal.classList.remove('hidden');
+    });
+  
+    closeWalletBtn?.addEventListener('click', () => {
+      walletModal.classList.add('hidden');
+    });
+  
+    walletModal?.addEventListener('click', (e) => {
+      if (e.target === walletModal) {
+        walletModal.classList.add('hidden');
+      }
+    });
+  
+    // Resize Handler for Sidebar
+    function handleResize() {
+      if (window.innerWidth >= 1024) {
+        sidebar.classList.remove('mobile-sidebar');
+        sidebar.classList.remove('open');
+        mobileBackdrop.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      } else {
+        sidebar.classList.add('mobile-sidebar');
+      }
+    }
+    window.addEventListener('resize', handleResize);
+    handleResize();
+  </script>
+  
+</body>
+</html>

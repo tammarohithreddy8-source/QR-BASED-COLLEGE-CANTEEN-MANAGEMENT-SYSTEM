@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Register - eCanteen</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+  <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      background-image: url("{% static 'images/banner.jpg' %}");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .nav-link:hover {
+      color: #ff6b6b !important;
+      transform: translateY(-2px);
+    }
+
+    .custom-popup {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .custom-popup.error   { background-color: #e74c3c; }
+    .custom-popup.success { background-color: #2ecc71; }
+    .custom-popup.fade-out {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+
+    @media (max-width: 768px) {
+      .navbar { display: none; }
+      .navbar.active {
+        display: block;
+        background: rgba(0,0,0,0.8);
+        position: absolute;
+        top: 60px; left: 0;
+        width: 100%;
+        padding: 20px;
+      }
+      .nav-items { flex-direction: column; align-items: center; }
+      .nav-item  { margin: 10px 0; }
+    }
+
+    footer { margin-top: 12%; }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <header class="container mx-auto px-4 py-6 flex justify-between items-center">
+    <a href="{% url 'home' %}" class="text-3xl font-bold text-white transition duration-300 hover:text-yellow-300">eCanteen</a>
+    <nav class="navbar flex items-center">
+      <ul class="nav-items flex space-x-6">
+        <li class="nav-item"><a href="{% url 'home' %}#hero" class="nav-link text-white text-lg font-medium transition duration-300">Home</a></li>
+        <li class="nav-item"><a href="{% url 'staff_login' %}" class="nav-link text-white text-lg font-medium transition duration-300">Canteen Login</a></li>
+        <li class="nav-item"><a href="{% url 'student_login' %}" class="nav-link text-white text-lg font-medium transition duration-300">Student Login</a></li>
+      </ul>
+    </nav>
+    <div class="md:hidden">
+      <i class="bx bx-menu menu-toggle text-white text-2xl cursor-pointer transition duration-300"></i>
+    </div>
+  </header>
+
+  <!-- Register Form -->
+  <main class="flex items-center justify-center py-12 px-4">
+    <div class="w-full max-w-lg bg-white bg-opacity-20 p-8 rounded-lg shadow-md backdrop-blur-md">
+      <h2 class="text-3xl font-bold text-white text-center mb-2">Admin Register</h2>
+      <p class="text-white text-center mb-6">Create your eCanteen admin account</p>
+
+      <form method="POST" class="space-y-4">
+        {% csrf_token %}
+
+        <div>
+          <label class="block text-white font-medium mb-1">Username</label>
+          <input type="text" name="username" value="{{ request.POST.username }}" required
+            placeholder="Enter username"
+            class="w-full px-4 py-2 rounded bg-white bg-opacity-20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-yellow-300" />
+        </div>
+
+        <div>
+          <label class="block text-white font-medium mb-1">Gmail Address</label>
+          <input type="email" name="email" value="{{ request.POST.email }}" required
+            placeholder="yourname@gmail.com"
+            class="w-full px-4 py-2 rounded bg-white bg-opacity-20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-yellow-300" />
+        </div>
+
+        <div>
+          <label class="block text-white font-medium mb-1">Password</label>
+          <input type="password" name="password" required
+            placeholder="Enter password"
+            class="w-full px-4 py-2 rounded bg-white bg-opacity-20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-yellow-300" />
+        </div>
+
+        <div>
+          <label class="block text-white font-medium mb-1">Confirm Password</label>
+          <input type="password" name="confirm_password" required
+            placeholder="Re-enter password"
+            class="w-full px-4 py-2 rounded bg-white bg-opacity-20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-yellow-300" />
+        </div>
+
+        <button type="submit"
+          class="w-full bg-yellow-300 hover:bg-yellow-400 transition text-black font-semibold py-2 rounded">
+          Register as Admin
+        </button>
+      </form>
+
+      <p class="text-white text-center mt-4 text-sm">
+        Already have an account?
+        <a href="{% url 'admin_login' %}" class="text-yellow-300 font-semibold hover:underline">Login here</a>
+      </p>
+      <p class="text-white text-center mt-2 text-sm">
+        Canteen staff?
+        <a href="{% url 'staff_register' %}" class="text-yellow-300 font-semibold hover:underline">Register as Staff</a>
+      </p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-6 text-center text-white bg-black bg-opacity-30">
+    <p>&copy; 2025 eCanteen. All Rights Reserved.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navbar = document.querySelector('.navbar');
+    if (menuToggle && navbar) {
+      menuToggle.addEventListener('click', () => navbar.classList.toggle('active'));
+    }
+
+    function showPopup(message, type) {
+      const popup = document.createElement('div');
+      popup.textContent = message;
+      popup.className = 'custom-popup ' + (type.includes('error') ? 'error' : 'success');
+      document.body.appendChild(popup);
+      setTimeout(() => {
+        popup.classList.add('fade-out');
+        popup.addEventListener('transitionend', () => popup.remove());
+      }, 2000);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      {% for message in messages %}
+        showPopup("{{ message|escapejs }}", "{{ message.tags }}");
+      {% endfor %}
+    });
+  </script>
+
+</body>
+</html>

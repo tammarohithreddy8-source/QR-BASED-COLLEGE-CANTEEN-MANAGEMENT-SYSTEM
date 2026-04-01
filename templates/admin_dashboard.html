@@ -1,0 +1,600 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard - eCanteen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              200: '#e2e8f0',
+              300: '#cbd5e1',
+              400: '#94a3b8',
+              500: '#64748b',
+              600: '#475569',
+              700: '#334155',
+              800: '#1e293b',
+              900: '#0f172a',
+            },
+            accent: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            },
+            success: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            },
+            warning: {
+              50: '#fefce8',
+              100: '#fef9c3',
+              200: '#fef08a',
+              300: '#fde047',
+              400: '#facc15',
+              500: '#eab308',
+              600: '#ca8a04',
+              700: '#a16207',
+              800: '#854d0e',
+              900: '#713f12',
+            },
+            danger: {
+              50: '#fef2f2',
+              100: '#fee2e2',
+              200: '#fecaca',
+              300: '#fca5a5',
+              400: '#f87171',
+              500: '#ef4444',
+              600: '#dc2626',
+              700: '#b91c1c',
+              800: '#991b1b',
+              900: '#7f1d1d',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-in-out',
+            'slide-down': 'slideDown 0.3s ease-out',
+            'slide-in-left': 'slideInLeft 0.3s ease-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideDown: {
+              '0%': { transform: 'translateY(-10px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+            slideInLeft: {
+              '0%': { transform: 'translateX(-20px)', opacity: '0' },
+              '100%': { transform: 'translateX(0)', opacity: '1' },
+            },
+          },
+        },
+      },
+    }
+  </script>
+  
+  <style>
+    /* Sidebar styles */
+    .sidebar-collapsed {
+      width: 5rem !important;
+    }
+    .sidebar-collapsed .logo-text,
+    .sidebar-collapsed .nav-text,
+    .sidebar-collapsed .profile-text {
+      display: none !important;
+    }
+    .sidebar-collapsed .nav-icon,
+    .sidebar-collapsed .profile-icon {
+      margin-right: 0 !important;
+    }
+    .sidebar-collapsed .nav-link {
+      justify-content: center !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    .sidebar-collapsed .profile {
+      justify-content: center !important;
+    }
+    
+    /* Mobile sidebar */
+    .mobile-sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    .mobile-sidebar.open {
+      transform: translateX(0);
+    }
+    
+    /* Custom scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    
+    /* Smooth transitions */
+    .transition-slow {
+      transition: all 0.3s ease;
+    }
+    .transition-medium {
+      transition: all 0.2s ease;
+    }
+    .transition-fast {
+      transition: all 0.1s ease;
+    }
+    
+    
+    .card-hover {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Active nav link */
+    .nav-link.active {
+      background-color: rgba(14, 165, 233, 0.1);
+      color: #0ea5e9;
+      border-left: 4px solid #0ea5e9;
+    }
+    
+    /* Modern shadow */
+    .modern-shadow {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+    
+    /* Responsive chart container */
+    .chart-container {
+      position: relative;
+      width: 100%;
+      min-height: 250px;
+    }
+    
+    @media (min-width: 768px) {
+      .chart-container {
+        min-height: 300px;
+      }
+    }
+    
+    /* Better focus states */
+    .focus-visible {
+      outline: 2px solid #0ea5e9;
+      outline-offset: 2px;
+    }
+    
+    /* Backdrop for mobile sidebar */
+    .backdrop {
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 30;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-primary-50 to-primary-100 bg-fixed min-h-screen font-sans antialiased">
+  <!-- Mobile Sidebar Backdrop -->
+  <div id="mobileBackdrop" class="fixed inset-0 backdrop hidden lg:hidden z-30"></div>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen bg-primary-800 text-white shadow-xl transition-slow lg:translate-x-0 mobile-sidebar">
+    <div class="flex flex-col h-full">
+      <!-- Logo -->
+      <div class="flex items-center justify-between px-6 py-5">
+        <div class="flex items-center space-x-3">
+          <i class='bx bx-food-menu text-2xl text-accent-400'></i>
+          <span class="logo-text text-xl font-bold">eCanteen</span>
+        </div>
+        <button id="sidebarToggle" class="text-primary-200 hover:text-white focus:outline-none transition-medium focus-visible">
+          <i class='bx bx-chevron-left text-2xl'></i>
+        </button>
+      </div>
+      
+      <!-- Navigation -->
+      <nav class="flex-1 px-4 py-2 overflow-y-auto custom-scrollbar">
+        <ul class="space-y-2">
+          <li>
+            <a href="{% url 'admin_dashboard' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link active focus-visible">
+              <i class='bx bx-home nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_manage' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link focus-visible">
+              <i class='bx bx-group nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">Manage Staff</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_report' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link focus-visible">
+              <i class='bx bx-bar-chart nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">View Reports</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_feedback' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link focus-visible">
+              <i class='bx bx-comment nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">View Feedback</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <!-- Bottom Section -->
+      <div class="px-4 py-4 border-t border-primary-700">
+        <!-- Profile -->
+        <div class="relative">
+          <button id="profileBtn" class="flex items-center w-full px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium focus:outline-none focus-visible">
+           
+            <span class="profile-text text-sm font-medium">{{ user.get_full_name|default:user.username }}</span>
+            <i class='bx bx-chevron-down ml-auto text-lg'></i>
+          </button>
+          
+          <!-- Profile Dropdown -->
+          <div id="profileDropdown" class="hidden absolute bottom-full left-0 mb-2 w-full bg-white rounded-lg shadow-xl z-50 border border-primary-200 animate-slide-down">
+            <div class="py-1">
+              
+              <form method="POST" action="{% url 'admin_logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-danger-600 hover:bg-primary-50 transition-medium focus:outline-none focus-visible">
+                  Logout
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile Sidebar Toggle -->
+  <button id="mobileSidebarToggle" class="fixed top-4 left-4 z-50 p-2 rounded-md bg-primary-700 text-white shadow-lg focus:outline-none focus-visible lg:hidden">
+    <i class='bx bx-menu text-2xl'></i>
+  </button>
+
+  <!-- Main Content -->
+  <main class="ml-0 lg:ml-64 transition-slow">
+    <div class="px-4 sm:px-6 py-6">
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 class="text-2xl font-bold text-primary-800">Dashboard Overview</h1>
+        <div class="text-sm text-primary-500">
+          <span id="currentDate"></span>
+        </div>
+      </div>
+      
+      {% if messages %}
+        <div class="mb-6 p-4 bg-white rounded-lg shadow-sm border-l-4 border-accent-500 animate-fade-in modern-shadow">
+          {% for msg in messages %}
+            <p class="text-primary-700 font-medium">{{ msg }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+      
+      <!-- Dashboard Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <!-- Students Card -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden transition-medium card-hover animate-slide-in-left">
+          <div class="p-4 sm:p-5 flex items-center">
+            <div class="p-3 rounded-lg bg-accent-50 text-accent-600 mr-3 sm:mr-4">
+              <i class='bx bx-user-pin text-2xl sm:text-3xl'></i>
+            </div>
+            <div>
+              <h3 class="text-base sm:text-lg font-semibold text-primary-800">Students</h3>
+              <p class="text-sm sm:text-base text-primary-600">{{ student_count }} Registered</p>
+              
+            </div>
+          </div>
+        </div>
+        
+        <!-- Staff Card -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden transition-medium card-hover animate-slide-in-left" style="animation-delay: 0.1s">
+          <div class="p-4 sm:p-5 flex items-center">
+            <div class="p-3 rounded-lg bg-success-50 text-success-600 mr-3 sm:mr-4">
+              <i class='bx bx-user-circle text-2xl sm:text-3xl'></i>
+            </div>
+            <div>
+              <h3 class="text-base sm:text-lg font-semibold text-primary-800">Staff</h3>
+              <p class="text-sm sm:text-base text-primary-600">{{ staff_count }} Registered</p>
+              
+            </div>
+          </div>
+        </div>
+        
+        <!-- Orders Card -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden transition-medium card-hover animate-slide-in-left" style="animation-delay: 0.2s">
+          <div class="p-4 sm:p-5 flex items-center">
+            <div class="p-3 rounded-lg bg-warning-50 text-warning-600 mr-3 sm:mr-4">
+              <i class='bx bx-shopping-bag text-2xl sm:text-3xl'></i>
+            </div>
+            <div>
+              <h3 class="text-base sm:text-lg font-semibold text-primary-800">Orders</h3>
+              <p class="text-sm sm:text-base text-primary-600">{{ today_order_count }} Today</p>
+              <p class="text-xs text-primary-400 mt-1">{% if today_order_count > 10 %}Busy day{% else %}Normal activity{% endif %}</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Revenue Card -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden transition-medium card-hover animate-slide-in-left" style="animation-delay: 0.3s">
+          <div class="p-4 sm:p-5 flex items-center">
+            <div class="p-3 rounded-lg bg-danger-50 text-danger-600 mr-3 sm:mr-4">
+              <i class='bx bx-dollar-circle text-2xl sm:text-3xl'></i>
+            </div>
+            <div>
+              <h3 class="text-base sm:text-lg font-semibold text-primary-800">Revenue</h3>
+              <p class="text-sm sm:text-base text-primary-600">₹{{ today_revenue|floatformat:2 }}</p>
+              <p class="text-xs text-primary-400 mt-1">Today's earnings</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Charts Section -->
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-6">
+        <!-- Pie Chart -->
+        <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm modern-shadow">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+            <h3 class="text-lg font-semibold text-primary-800">Today's Summary</h3>
+            <div class="flex space-x-2">
+   
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="summaryChart"></canvas>
+          </div>
+        </div>
+        
+        <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm modern-shadow">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+            <h3 class="text-lg font-semibold text-primary-800">Weekly Orders</h3>
+            <div class="flex space-x-2">
+              <button class="px-2 sm:px-3 py-1 text-xs bg-primary-100 rounded-md text-primary-600 hover:bg-primary-200 transition-medium focus-visible">Orders</button>
+              <button class="px-2 sm:px-3 py-1 text-xs bg-primary-50 rounded-md text-primary-500 hover:bg-primary-100 transition-medium focus-visible">Revenue</button>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="ordersChart"></canvas>
+          </div>
+        </div>
+      
+    
+    </div>
+  </main>
+
+  <script>
+    // Sidebar Toggle
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
+    const mobileBackdrop = document.getElementById('mobileBackdrop');
+    
+    function toggleSidebar() {
+      sidebar.classList.toggle('sidebar-collapsed');
+      const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
+      sidebarToggle.innerHTML = isCollapsed ? 
+        '<i class="bx bx-chevron-right text-2xl"></i>' : 
+        '<i class="bx bx-chevron-left text-2xl"></i>';
+      
+      // Adjust main content margin when collapsing
+      const mainContent = document.querySelector('main');
+      if (isCollapsed) {
+        mainContent.classList.remove('lg:ml-64');
+        mainContent.classList.add('lg:ml-20');
+      } else {
+        mainContent.classList.remove('lg:ml-20');
+        mainContent.classList.add('lg:ml-64');
+      }
+    }
+    
+    sidebarToggle.addEventListener('click', toggleSidebar);
+    
+    // Mobile Sidebar Toggle
+    function toggleMobileSidebar() {
+      sidebar.classList.toggle('open');
+      mobileBackdrop.classList.toggle('hidden');
+      document.body.classList.toggle('overflow-hidden');
+    }
+    
+    mobileSidebarToggle.addEventListener('click', toggleMobileSidebar);
+    mobileBackdrop.addEventListener('click', toggleMobileSidebar);
+    
+    // Close mobile sidebar when clicking on nav links
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth < 1024) {
+          toggleMobileSidebar();
+        }
+      });
+    });
+    
+    // Profile Dropdown
+    const profileBtn = document.getElementById('profileBtn');
+    const profileDropdown = document.getElementById('profileDropdown');
+    
+    profileBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      profileDropdown.classList.toggle('hidden');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', () => {
+      profileDropdown.classList.add('hidden');
+    });
+    
+    // Prevent dropdown from closing when clicking inside
+    profileDropdown.addEventListener('click', (e) => e.stopPropagation());
+    
+    // Display current date
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', options);
+    
+    document.addEventListener('DOMContentLoaded', function() {
+    // Summary Chart (Doughnut)
+    const summaryCtx = document.getElementById('summaryChart').getContext('2d');
+    new Chart(summaryCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Students', 'Staff', 'Orders', 'Revenue'],
+        datasets: [{
+          data: [
+            {{ student_count }},
+            {{ staff_count }},
+            {{ today_order_count }},
+            {{ today_revenue|floatformat:2 }}
+          ],
+          backgroundColor: [
+            'rgba(14, 165, 233, 0.7)', // accent-500
+            'rgba(34, 197, 94, 0.7)',  // success-500
+            'rgba(234, 179, 8, 0.7)',  // warning-500
+            'rgba(239, 68, 68, 0.7)'   // danger-500
+          ],
+          borderColor: [
+            'rgba(14, 165, 233, 1)',
+            'rgba(34, 197, 94, 1)',
+            'rgba(234, 179, 8, 1)',
+            'rgba(239, 68, 68, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '70%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              color: '#1e293b',
+              font: {
+                weight: '500'
+              },
+              padding: 20,
+              usePointStyle: true,
+              pointStyle: 'circle'
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.raw;
+                return label === 'Revenue' ? 
+                  `${label}: ₹${value}` : 
+                  `${label}: ${value}`;
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Orders Chart (Bar)
+    const ordersCtx = document.getElementById('ordersChart').getContext('2d');
+    
+    // Data passed from Django view to template
+    const weeklyOrders = {{ weekly_order_count|safe }}; // This will inject the list of orders per day
+
+    new Chart(ordersCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          label: 'Orders',
+          data: weeklyOrders, // Use the dynamic weekly orders data here
+          backgroundColor: 'rgba(14, 165, 233, 0.7)',
+          borderColor: 'rgba(14, 165, 233, 1)',
+          borderWidth: 1,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              drawBorder: false
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      }
+    });
+  });
+    // Highlight active nav link
+    const currentPath = window.location.pathname;
+    document.querySelectorAll('.nav-link').forEach(link => {
+      if (link.getAttribute('href') === currentPath) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+    
+    // Adjust sidebar on window resize
+    function handleResize() {
+      if (window.innerWidth >= 1024) {
+        sidebar.classList.remove('mobile-sidebar');
+        sidebar.classList.remove('open');
+        mobileBackdrop.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      } else {
+        sidebar.classList.add('mobile-sidebar');
+      }
+    }
+    
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Run once on load
+  </script>
+</body>
+</html>

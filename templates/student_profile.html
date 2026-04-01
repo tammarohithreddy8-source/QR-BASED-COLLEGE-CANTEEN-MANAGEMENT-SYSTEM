@@ -1,0 +1,634 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Profile - eCanteen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#ecf0f1',
+              100: '#d6dbdf',
+              200: '#bdc3c7',
+              300: '#a4b0bd',
+              400: '#7f8c8d',
+              500: '#2c3e50',
+              600: '#34495e',
+              700: '#2c3e50',
+              800: '#2c3e50',
+              900: '#2c3e50',
+            },
+            accent: {
+              50: '#e8f4fc',
+              100: '#d0e9f9',
+              200: '#a1d3f3',
+              300: '#72bded',
+              400: '#43a7e7',
+              500: '#2980b9',
+              600: '#3498db',
+              700: '#2980b9',
+              800: '#2980b9',
+              900: '#2980b9',
+            },
+            success: {
+              50: '#e8f6f3',
+              100: '#d0ece7',
+              200: '#a2d9cf',
+              300: '#73c6b6',
+              400: '#45b39d',
+              500: '#16a085',
+              600: '#138d75',
+              700: '#117a65',
+              800: '#0e6655',
+              900: '#0b5345',
+            },
+            warning: {
+              50: '#fef5e7',
+              100: '#fdebd0',
+              200: '#fad7a0',
+              300: '#f8c471',
+              400: '#f5b041',
+              500: '#f39c12',
+              600: '#d68910',
+              700: '#b9770e',
+              800: '#9c640c',
+              900: '#7e5109',
+            },
+            danger: {
+              50: '#fdedec',
+              100: '#fadbd8',
+              200: '#f5b7b1',
+              300: '#f1948a',
+              400: '#ec7063',
+              500: '#e74c3c',
+              600: '#cb4335',
+              700: '#b03a2e',
+              800: '#943126',
+              900: '#78281f',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-in-out',
+            'slide-down': 'slideDown 0.3s ease-out',
+            'slide-in-left': 'slideInLeft 0.3s ease-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideDown: {
+              '0%': { transform: 'translateY(-10px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+            slideInLeft: {
+              '0%': { transform: 'translateX(-20px)', opacity: '0' },
+              '100%': { transform: 'translateX(0)', opacity: '1' },
+            },
+          },
+        },
+      },
+      darkMode: 'class',
+    }
+  </script>
+  
+  <style>
+    /* Sidebar styles */
+    .sidebar-collapsed {
+      width: 5rem !important;
+    }
+    .sidebar-collapsed .logo-text,
+    .sidebar-collapsed .nav-text,
+    .sidebar-collapsed .profile-text {
+      display: none !important;
+    }
+    .sidebar-collapsed .nav-icon,
+    .sidebar-collapsed .profile-icon {
+      margin-right: 0 !important;
+    }
+    .sidebar-collapsed .nav-link {
+      justify-content: center !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    .sidebar-collapsed .profile {
+      justify-content: center !important;
+    }
+    
+    /* Mobile sidebar */
+    .mobile-sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    .mobile-sidebar.open {
+      transform: translateX(0);
+    }
+    
+    /* Custom scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #a4b0bd;
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #7f8c8d;
+    }
+    
+    /* Smooth transitions */
+    .transition-slow {
+      transition: all 0.3s ease;
+    }
+    .transition-medium {
+      transition: all 0.2s ease;
+    }
+    .transition-fast {
+      transition: all 0.1s ease;
+    }
+    
+    .card-hover {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Active nav link */
+    .nav-link.active {
+      background-color: rgba(41, 128, 185, 0.1);
+      color: #2980b9;
+      border-left: 4px solid #2980b9;
+    }
+    
+    /* Modern shadow */
+    .modern-shadow {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+    
+    /* Better focus states */
+    .focus-visible {
+      outline: 2px solid #2980b9;
+      outline-offset: 2px;
+    }
+    
+    /* Backdrop for mobile sidebar */
+    .backdrop {
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 30;
+    }
+    
+    /* Profile image */
+    .profile-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #2980b9;
+      box-shadow: 0 0 6px #2980b9;
+    }
+    
+    /* Dark mode styles */
+    .dark .bg-gradient-to-br {
+      background: linear-gradient(to bottom right, #2c3e50, #34495e);
+    }
+    .dark .bg-white {
+      background-color: #1a202c;
+    }
+    .dark .text-primary-800 {
+      color: #e2e8f0;
+    }
+    .dark .text-primary-700 {
+      color: #cbd5e1;
+    }
+    .dark .text-primary-600 {
+      color: #a0aec0;
+    }
+    .dark .text-primary-500 {
+      color: #a0aec0;
+    }
+    .dark .bg-primary-100 {
+      background-color: #2d3748;
+    }
+    .dark .bg-primary-200 {
+      background-color: #4a5568;
+    }
+    .dark .bg-accent-50 {
+      background-color: #2b6cb0;
+    }
+    .dark .bg-warning-50 {
+      background-color: #b7791f;
+    }
+    .dark .bg-success-50 {
+      background-color: #2f855a;
+    }
+    .dark .border-primary-100 {
+      border-color: #4a5568;
+    }
+    .dark .border-primary-200 {
+      border-color: #2d3748;
+    }
+    .dark .text-accent-600 {
+      color: #90cdf4;
+    }
+    .dark .text-warning-600 {
+      color: #f6ad55;
+    }
+    .dark .text-success-600 {
+      color: #68d391;
+    }
+  </style>
+</head>
+<body class="bg-gray-200 min-h-screen font-sans antialiased">
+  <!-- Mobile Sidebar Backdrop -->
+  <div id="mobileBackdrop" class="fixed inset-0 backdrop hidden lg:hidden z-30"></div>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen bg-primary-800 text-white shadow-xl transition-slow lg:translate-x-0 mobile-sidebar">
+    <div class="flex flex-col h-full">
+      <!-- Logo -->
+      <div class="flex items-center justify-between px-6 py-5">
+        <div class="flex items-center space-x-3">
+          <i class='bx bx-food-menu text-2xl text-accent-400'></i>
+          <span class="logo-text text-xl font-bold">eCanteen Student</span>
+        </div>
+        <button id="sidebarToggle" class="text-primary-200 hover:text-white focus:outline-none transition-medium focus-visible" aria-label="Toggle sidebar">
+          <i class='bx bx-chevron-left text-2xl'></i>
+        </button>
+      </div>
+      
+      <!-- Navigation -->
+      <nav class="flex-1 px-4 py-2 overflow-y-auto custom-scrollbar">
+        <ul class="space-y-2">
+          <li>
+            <a href="{% url 'student_dashboard' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link focus-visible">
+              <i class='bx bx-home nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'view_menu' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link focus-visible">
+              <i class='bx bx-bowl-hot nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">View Menu</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'order_status' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link focus-visible">
+              <i class='bx bx-cart nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">Order Status</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'student_feedback' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link focus-visible">
+              <i class='bx bx-comment nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">Feedback</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'student_profile' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link active focus-visible">
+              <i class='bx bx-user nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">Profile</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <!-- Profile -->
+      <div class="px-4 py-4 border-t border-primary-700">
+        <div class="relative">
+          <button id="profileBtn" class="flex items-center w-full px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium focus:outline-none focus-visible profile" aria-label="Toggle profile menu" aria-haspopup="true" aria-expanded="false">
+            {% if student.profile_picture %}
+              <img src="{{ student.profile_picture.url }}" class="profile-img mr-3" alt="Profile Picture" />
+            {% else %}
+              <i class='bx bx-user profile-icon mr-3 text-lg'></i>
+            {% endif %}
+            <span class="profile-text text-sm font-medium">{{ student.name }}</span>
+            <i class='bx bx-chevron-down ml-auto text-lg'></i>
+          </button>
+          <!-- Profile Dropdown -->
+          <div id="profileDropdown" class="hidden absolute bottom-full left-0 mb-2 w-full bg-white rounded-lg shadow-xl z-50 border border-primary-200 animate-slide-down">
+            <div class="py-1">
+              <a href="{% url 'student_profile' %}" class="block w-full text-left px-4 py-2 text-sm text-primary-600 hover:bg-primary-50 transition-medium focus-visible">Profile</a>
+              <form method="POST" action="{% url 'student_logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-danger-600 hover:bg-primary-50 transition-medium focus-visible">Logout</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  
+  <!-- Mobile Sidebar Toggle -->
+  <button id="mobileSidebarToggle" class="fixed top-4 left-4 z-50 p-2 rounded-md bg-primary-700 text-white shadow-lg focus:outline-none focus-visible lg:hidden" aria-label="Toggle mobile sidebar">
+    <i class='bx bx-menu text-2xl'></i>
+  </button>
+  
+  <!-- Main Content -->
+  <main class="ml-0 lg:ml-64 transition-slow p-6">
+    <div class="max-w-2xl mx-auto">
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-4">
+        <div>
+          <h1 class="text-xl font-semibold text-gray-700">Student Profile</h1>
+          <a href="{% url 'student_dashboard' %}" class="text-sm text-accent-600 hover:text-accent-700 transition-medium mt-1 inline-block">← Back to Dashboard</a>
+        </div>
+        <div class="text-sm text-gray-500"><button id="darkModeToggle" class="ml-2 p-1 rounded-md text-primary-600 hover:bg-primary-200 transition-medium focus-visible"><i class='bx bx-moon text-lg'></i></button></div>
+      </div>
+      
+      <!-- Messages -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="mb-4 p-3 bg-success-100 border-l-4 border-success-500 text-success-700 rounded-md animate-fade-in">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      
+      <!-- Profile Card -->
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-lg font-medium text-gray-700 mb-4">Student Information</h2>
+        <div class="flex flex-col items-center sm:flex-row sm:items-start gap-6">
+          {% if student.profile_picture %}
+            <img src="{{ student.profile_picture.url }}" class="profile-img" alt="Profile Picture" />
+          {% else %}
+            <div class="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center">
+              <i class='bx bx-user text-gray-500 text-3xl'></i>
+            </div>
+          {% endif %}
+          <div class="text-gray-600">
+            <p><strong>Name:</strong> {{ student.name|default:'sai0906' }}</p>
+            <p><strong>Email:</strong> {{ student.email|default:'saiprasanth0906@gmail.com' }}</p>
+            <p><strong>Contact:</strong> {{ student.contact|default:'8008440780' }}</p>
+            <p><strong>Address:</strong> {{ student.address|default:'' }}</p>
+            <p><strong>Join Date:</strong> {{ student.join_date|default:'July 15, 2025' }}</p>
+          </div>
+        </div>
+        <button id="openModalBtn" class="mt-6 w-full sm:w-auto px-4 py-2 bg-accent-500 text-white rounded-md hover:bg-accent-600 transition-medium focus-visible">
+          Update Profile / Change Password
+        </button>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Modal -->
+  <div id="profileModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="bg-white dark:bg-primary-200 rounded-xl p-6 sm:p-8 w-full max-w-md max-h-[90vh] overflow-y-auto modern-shadow">
+      <button id="closeModalBtn" class="absolute top-4 right-4 text-primary-600 hover:text-accent-600 focus:outline-none focus-visible transition-medium" aria-label="Close modal">
+        <i class='bx bx-x text-2xl'></i>
+      </button>
+      
+      <div class="flex border-b border-primary-300 mb-4">
+        <button class="tab flex-1 py-2 text-center text-primary-700 font-semibold border-b-2 border-transparent hover:border-accent-500 focus:outline-none focus-visible transition-medium active" id="tab-profile" role="tab" aria-selected="true" tabindex="0" aria-controls="panel-profile">
+          Update Profile
+        </button>
+        <button class="tab flex-1 py-2 text-center text-primary-700 font-semibold border-b-2 border-transparent hover:border-accent-500 focus:outline-none focus-visible transition-medium" id="tab-password" role="tab" aria-selected="false" tabindex="-1" aria-controls="panel-password">
+          Change Password
+        </button>
+      </div>
+      
+      <section id="panel-profile" role="tabpanel" aria-labelledby="tab-profile">
+        <form method="post" enctype="multipart/form-data" class="space-y-4">
+          {% csrf_token %}
+          <input type="hidden" name="update_profile" value="1" />
+          <div>
+            <label for="name" class="block text-sm font-medium text-primary-700">Name:</label>
+            <input id="name" type="text" name="name" value="{{ student.name|default:'sai0906' }}" required class="mt-1 w-full px-3 py-2 border border-primary-300 rounded-md focus:outline-none focus:ring-accent-500 focus:border-accent-500 dark:bg-primary-100 dark:border-primary-200 dark:text-primary-700" />
+          </div>
+          <div>
+            <label for="username" class="block text-sm font-medium text-primary-700">Username:</label>
+            <input id="username" type="text" name="username" value="{{ student.username|default:'sai0906' }}" required class="mt-1 w-full px-3 py-2 border border-primary-300 rounded-md focus:outline-none focus:ring-accent-500 focus:border-accent-500 dark:bg-primary-100 dark:border-primary-200 dark:text-primary-700" />
+          </div>
+          <div>
+            <label for="email" class="block text-sm font-medium text-primary-700">Email:</label>
+            <input id="email" type="email" name="email" value="{{ student.email|default:'saiprasanth0906@gmail.com' }}" required class="mt-1 w-full px-3 py-2 border border-primary-300 rounded-md focus:outline-none focus:ring-accent-500 focus:border-accent-500 dark:bg-primary-100 dark:border-primary-200 dark:text-primary-700" />
+          </div>
+          <div>
+            <label for="contact" class="block text-sm font-medium text-primary-700">Contact:</label>
+            <input id="contact" type="text" name="contact" value="{{ student.contact|default:'8008440780' }}" class="mt-1 w-full px-3 py-2 border border-primary-300 rounded-md focus:outline-none focus:ring-accent-500 focus:border-accent-500 dark:bg-primary-100 dark:border-primary-200 dark:text-primary-700" />
+          </div>
+          <div>
+            <label for="address" class="block text-sm font-medium text-primary-700">Address:</label>
+            <textarea id="address" name="address" rows="4" class="mt-1 w-full px-3 py-2 border border-primary-300 rounded-md focus:outline-none focus:ring-accent-500 focus:border-accent-500 dark:bg-primary-100 dark:border-primary-200 dark:text-primary-700">{{ student.address|default:'' }}</textarea>
+          </div>
+          <div>
+            <label for="profile_picture" class="block text-sm font-medium text-primary-700">Profile Picture:</label>
+            <input id="profile_picture" type="file" name="profile_picture" class="mt-1 w-full px-3 py-2 border border-primary-300 rounded-md focus:outline-none focus:ring-accent-500 focus:border-accent-500 dark:bg-primary-100 dark:border-primary-200 dark:text-primary-700" />
+          </div>
+          <button type="submit" class="w-full px-4 py-2 bg-success-600 text-white rounded-lg hover:bg-success-700 transition-medium focus-visible">Update Profile</button>
+        </form>
+      </section>
+      
+      <section id="panel-password" role="tabpanel" aria-labelledby="tab-password" hidden>
+        <form method="post" class="space-y-4">
+          {% csrf_token %}
+          <input type="hidden" name="change_password" value="1" />
+          <div>
+            <label for="current_password" class="block text-sm font-medium text-primary-700">Current Password:</label>
+            <input id="current_password" type="password" name="current_password" required class="mt-1 w-full px-3 py-2 border border-primary-300 rounded-md focus:outline-none focus:ring-accent-500 focus:border-accent-500 dark:bg-primary-100 dark:border-primary-200 dark:text-primary-700" />
+          </div>
+          <div>
+            <label for="new_password" class="block text-sm font-medium text-primary-700">New Password:</label>
+            <input id="new_password" type="password" name="new_password" required class="mt-1 w-full px-3 py-2 border border-primary-300 rounded-md focus:outline-none focus:ring-accent-500 focus:border-accent-500 dark:bg-primary-100 dark:border-primary-200 dark:text-primary-700" />
+          </div>
+          <div>
+            <label for="confirm_password" class="block text-sm font-medium text-primary-700">Confirm New Password:</label>
+            <input id="confirm_password" type="password" name="confirm_password" required class="mt-1 w-full px-3 py-2 border border-primary-300 rounded-md focus:outline-none focus:ring-accent-500 focus:border-accent-500 dark:bg-primary-100 dark:border-primary-200 dark:text-primary-700" />
+          </div>
+          <button type="submit" class="w-full px-4 py-2 bg-success-600 text-white rounded-lg hover:bg-success-700 transition-medium focus-visible">Change Password</button>
+        </form>
+      </section>
+    </div>
+  </div>
+  
+  <script>
+    // Dark Mode Toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      darkModeToggle.innerHTML = isDark ? 
+        '<i class="bx bx-sun text-lg"></i>' : 
+        '<i class="bx bx-moon text-lg"></i>';
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+    darkModeToggle.addEventListener('click', toggleDarkMode);
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark');
+      darkModeToggle.innerHTML = '<i class="bx bx-sun text-lg"></i>';
+    }
+
+    // Sidebar Toggle
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
+    const mobileBackdrop = document.getElementById('mobileBackdrop');
+    
+    function toggleSidebar() {
+      sidebar.classList.toggle('sidebar-collapsed');
+      const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
+      sidebarToggle.innerHTML = isCollapsed ? 
+        '<i class="bx bx-chevron-right text-2xl"></i>' : 
+        '<i class="bx bx-chevron-left text-2xl"></i>';
+      
+      const mainContent = document.querySelector('main');
+      if (isCollapsed) {
+        mainContent.classList.remove('lg:ml-64');
+        mainContent.classList.add('lg:ml-20');
+      } else {
+        mainContent.classList.remove('lg:ml-20');
+        mainContent.classList.add('lg:ml-64');
+      }
+    }
+    
+    sidebarToggle.addEventListener('click', toggleSidebar);
+    
+    function toggleMobileSidebar() {
+      sidebar.classList.toggle('open');
+      mobileBackdrop.classList.toggle('hidden');
+      document.body.classList.toggle('overflow-hidden');
+    }
+    
+    mobileSidebarToggle.addEventListener('click', toggleMobileSidebar);
+    mobileBackdrop.addEventListener('click', toggleMobileSidebar);
+    
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (window.innerWidth < 1024) {
+          toggleMobileSidebar();
+        }
+        window.location.href = link.getAttribute('href');
+      });
+    });
+    
+    // Profile Dropdown
+    const profileBtn = document.getElementById('profileBtn');
+    const profileDropdown = document.getElementById('profileDropdown');
+    
+    profileBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      profileDropdown.classList.toggle('hidden');
+      profileBtn.setAttribute('aria-expanded', !profileDropdown.classList.contains('hidden'));
+    });
+    
+    document.addEventListener('click', (e) => {
+      if (!profileDropdown.contains(e.target) && !profileBtn.contains(e.target)) {
+        profileDropdown.classList.add('hidden');
+        profileBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+    
+    profileDropdown.addEventListener('click', (e) => e.stopPropagation());
+
+    // Modal Toggle
+    const openModalBtn = document.getElementById('openModalBtn');
+    const profileModal = document.getElementById('profileModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    
+    openModalBtn.addEventListener('click', () => {
+      profileModal.classList.remove('hidden');
+      profileModal.setAttribute('aria-hidden', 'false');
+      document.querySelector('#tab-profile').focus();
+    });
+    
+    closeModalBtn.addEventListener('click', closeModal);
+    profileModal.addEventListener('click', (e) => {
+      if (e.target === profileModal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !profileModal.classList.contains('hidden')) {
+        closeModal();
+      }
+    });
+    
+    function closeModal() {
+      profileModal.classList.add('hidden');
+      profileModal.setAttribute('aria-hidden', 'true');
+      openModalBtn.focus();
+    }
+    
+    // Tabs Logic
+    const tabs = document.querySelectorAll('.tab');
+    const panels = {
+      profile: document.getElementById('panel-profile'),
+      password: document.getElementById('panel-password'),
+    };
+    
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        activateTab(tab.id.replace('tab-', ''));
+      });
+      tab.addEventListener('keydown', (e) => {
+        let idx = Array.from(tabs).indexOf(e.target);
+        if (e.key === 'ArrowRight') {
+          idx = (idx + 1) % tabs.length;
+          tabs[idx].focus();
+          activateTab(tabs[idx].id.replace('tab-', ''));
+          e.preventDefault();
+        } else if (e.key === 'ArrowLeft') {
+          idx = (idx - 1 + tabs.length) % tabs.length;
+          tabs[idx].focus();
+          activateTab(tabs[idx].id.replace('tab-', ''));
+          e.preventDefault();
+        }
+      });
+    });
+    
+    function activateTab(name) {
+      tabs.forEach(tab => {
+        const isActive = tab.id === `tab-${name}`;
+        tab.classList.toggle('active', isActive);
+        tab.classList.toggle('border-accent-500', isActive);
+        tab.classList.toggle('text-accent-600', isActive);
+        tab.setAttribute('aria-selected', isActive);
+        tab.tabIndex = isActive ? 0 : -1;
+        panels[tab.id.replace('tab-', '')].hidden = !isActive;
+      });
+    }
+    
+    // Highlight active nav link
+    const currentPath = window.location.pathname;
+    document.querySelectorAll('.nav-link').forEach(link => {
+      if (link.getAttribute('href') === currentPath) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+    
+    // Adjust sidebar on window resize
+    function handleResize() {
+      if (window.innerWidth >= 1024) {
+        sidebar.classList.remove('mobile-sidebar');
+        sidebar.classList.remove('open');
+        mobileBackdrop.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      } else {
+        sidebar.classList.add('mobile-sidebar');
+      }
+    }
+    
+    window.addEventListener('resize', handleResize);
+    handleResize();
+  </script>
+</body>
+</html>

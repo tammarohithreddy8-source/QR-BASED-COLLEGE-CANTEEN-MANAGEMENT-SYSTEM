@@ -1,0 +1,17 @@
+<main>
+    <h1>Order Summary</h1>
+  
+    <ul>
+      {% for item in cart_items %}
+        <li>{{ item.item.name }} — ₹{{ item.item.price }} × {{ item.quantity }} = ₹{{ item.item.price|floatformat:2|add:item.quantity }}</li>
+      {% endfor %}
+    </ul>
+  
+    <p><strong>Total: ₹{{ total|floatformat:2 }}</strong></p>
+  
+    <form method="POST" action="#">
+      {% csrf_token %}
+      <button type="submit">Place Order & Pay</button>
+    </form>
+  </main>
+  

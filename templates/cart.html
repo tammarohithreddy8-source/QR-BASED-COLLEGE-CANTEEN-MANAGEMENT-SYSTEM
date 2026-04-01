@@ -1,0 +1,861 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Your Cart - eCanteen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#ecf0f1',
+              100: '#d6dbdf',
+              200: '#bdc3c7',
+              300: '#a4b0bd',
+              400: '#7f8c8d',
+              500: '#2c3e50',
+              600: '#34495e',
+              700: '#2c3e50',
+              800: '#2c3e50',
+              900: '#2c3e50',
+            },
+            accent: {
+              50: '#e8f4fc',
+              100: '#d0e9f9',
+              200: '#a1d3f3',
+              300: '#72bded',
+              400: '#43a7e7',
+              500: '#2980b9',
+              600: '#3498db',
+              700: '#2980b9',
+              800: '#2980b9',
+              900: '#2980b9',
+            },
+            success: {
+              50: '#e8f6f3',
+              100: '#d0ece7',
+              200: '#a2d9cf',
+              300: '#73c6b6',
+              400: '#45b39d',
+              500: '#16a085',
+              600: '#138d75',
+              700: '#117a65',
+              800: '#0e6655',
+              900: '#0b5345',
+            },
+            warning: {
+              50: '#fef5e7',
+              100: '#fdebd0',
+              200: '#fad7a0',
+              300: '#f8c471',
+              400: '#f5b041',
+              500: '#f39c12',
+              600: '#d68910',
+              700: '#b9770e',
+              800: '#9c640c',
+              900: '#7e5109',
+            },
+            danger: {
+              50: '#fdedec',
+              100: '#fadbd8',
+              200: '#f5b7b1',
+              300: '#f1948a',
+              400: '#ec7063',
+              500: '#e74c3c',
+              600: '#cb4335',
+              700: '#b03a2e',
+              800: '#943126',
+              900: '#78281f',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-in-out',
+            'slide-down': 'slideDown 0.3s ease-out',
+            'slide-in-left': 'slideInLeft 0.3s ease-out',
+            'scale-in': 'scaleIn 0.3s ease-out',
+            'fade-out': 'fadeOut 0.3s ease-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideDown: {
+              '0%': { transform: 'translateY(-10px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+            slideInLeft: {
+              '0%': { transform: 'translateX(-20px)', opacity: '0' },
+              '100%': { transform: 'translateX(0)', opacity: '1' },
+            },
+            scaleIn: {
+              '0%': { transform: 'scale(0.95)', opacity: '0' },
+              '100%': { transform: 'scale(1)', opacity: '1' },
+            },
+            fadeOut: {
+              '0%': { opacity: '1' },
+              '100%': { opacity: '0' },
+            },
+          },
+        },
+      },
+      darkMode: 'class',
+    }
+  </script>
+  
+  <style>
+    /* Sidebar styles */
+    .sidebar-collapsed {
+      width: 5rem !important;
+    }
+    .sidebar-collapsed .logo-text,
+    .sidebar-collapsed .nav-text,
+    .sidebar-collapsed .profile-text {
+      display: none !important;
+    }
+    .sidebar-collapsed .nav-icon,
+    .sidebar-collapsed .profile-icon {
+      margin-right: 0 !important;
+    }
+    .sidebar-collapsed .nav-link {
+      justify-content: center !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    .sidebar-collapsed .profile {
+      justify-content: center !important;
+    }
+    
+    /* Mobile sidebar */
+    .mobile-sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    .mobile-sidebar.open {
+      transform: translateX(0);
+    }
+    
+    /* Custom scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #a4b0bd;
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #7f8c8d;
+    }
+    
+    /* Smooth transitions */
+    .transition-slow {
+      transition: all 0.3s ease;
+    }
+    .transition-medium {
+      transition: all 0.2s ease;
+    }
+    .transition-fast {
+      transition: all 0.1s ease;
+    }
+    
+    .card-hover {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Active nav link */
+    .nav-link.active {
+      background-color: rgba(41, 128, 185, 0.1);
+      color: #2980b9;
+      border-left: 4px solid #2980b9;
+    }
+    
+    /* Modern shadow */
+    .modern-shadow {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+    
+    /* Better focus states */
+    .focus-visible {
+      outline: 2px solid #2980b9;
+      outline-offset: 2px;
+    }
+    
+    /* Backdrop for mobile sidebar */
+    .backdrop {
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 30;
+    }
+    
+    /* Profile image */
+    .profile-img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #2980b9;
+      box-shadow: 0 0 6px #2980b9;
+    }
+    
+    /* Modal overlay */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.show {
+      display: flex;
+      opacity: 1;
+    }
+    
+    /* Modal content */
+    .modal-content {
+      transform: scale(0.95);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      background: white;
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      max-width: 28rem;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-overlay.show .modal-content {
+      transform: scale(1);
+      opacity: 1;
+    }
+    
+    /* Dark mode styles */
+    .dark .bg-gradient-to-br {
+      background: linear-gradient(to bottom right, #2c3e50, #34495e);
+    }
+    .dark .bg-white {
+      background-color: #1a202c;
+    }
+    .dark .text-primary-800 {
+      color: #e2e8f0;
+    }
+    .dark .text-primary-700 {
+      color: #cbd5e1;
+    }
+    .dark .text-primary-600 {
+      color: #a0aec0;
+    }
+    .dark .text-primary-500 {
+      color: #a0aec0;
+    }
+    .dark .bg-primary-100 {
+      background-color: #2d3748;
+    }
+    .dark .bg-primary-200 {
+      background-color: #4a5568;
+    }
+    .dark .bg-accent-50 {
+      background-color: #2b6cb0;
+    }
+    .dark .bg-warning-50 {
+      background-color: #b7791f;
+    }
+    .dark .bg-success-50 {
+      background-color: #2f855a;
+    }
+    .dark .border-primary-100 {
+      border-color: #4a5568;
+    }
+    .dark .border-primary-200 {
+      border-color: #2d3748;
+    }
+    .dark .text-accent-600 {
+      color: #90cdf4;
+    }
+    .dark .text-warning-600 {
+      color: #f6ad55;
+    }
+    .dark .text-success-600 {
+      color: #68d391;
+    }
+    .dark .modal-content {
+      background-color: #1a202c;
+      border-color: #4a5568;
+    }
+    .dark .modal-content .text-primary-700 {
+      color: #e2e8f0;
+    }
+    .dark .modal-content .bg-primary-50 {
+      background-color: #2d3748;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-primary-50 to-primary-100 bg-fixed min-h-screen font-sans antialiased">
+  <!-- Mobile Sidebar Backdrop -->
+  <div id="mobileBackdrop" class="fixed inset-0 backdrop hidden lg:hidden z-30"></div>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen bg-primary-800 text-white shadow-xl transition-slow lg:translate-x-0 mobile-sidebar">
+    <div class="flex flex-col h-full">
+      <!-- Logo -->
+      <div class="flex items-center justify-between px-6 py-5">
+        <div class="flex items-center space-x-3">
+          <i class='bx bx-food-menu text-2xl text-accent-400'></i>
+          <span class="logo-text text-xl font-bold">eCanteen</span>
+        </div>
+        <button id="sidebarToggle" class="text-primary-200 hover:text-white focus:outline-none transition-medium focus-visible" aria-label="Toggle sidebar">
+          <i class='bx bx-chevron-left text-2xl'></i>
+        </button>
+      </div>
+      
+      <!-- Navigation -->
+      <nav class="flex-1 px-4 py-2 overflow-y-auto custom-scrollbar">
+        <ul class="space-y-2">
+          <li>
+            <a href="{% url 'student_dashboard' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link focus-visible">
+              <i class='bx bx-home nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'view_menu' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link focus-visible">
+              <i class='bx bx-bowl-hot nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">View Menu</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'order_status' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link active focus-visible">
+              <i class='bx bx-cart nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">Order Status</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'student_feedback' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link focus-visible">
+              <i class='bx bx-comment nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">Feedback</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <!-- Profile -->
+      <div class="px-4 py-4 border-t border-primary-700">
+        <div class="relative">
+          <button id="profileBtn" class="flex items-center w-full px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium focus:outline-none focus-visible" aria-label="Toggle profile menu" aria-haspopup="true" aria-expanded="false">
+            <span class="profile-text text-sm font-medium">{{ user.get_full_name|default:user.username }}</span>
+            <i class='bx bx-chevron-down ml-auto text-lg'></i>
+          </button>
+          <!-- Profile Dropdown -->
+          <div id="profileDropdown" class="hidden absolute bottom-full left-0 mb-2 w-full bg-white rounded-lg shadow-xl z-50 border border-primary-200 animate-slide-down">
+            <div class="py-1">
+              <a href="{% url 'student_profile' %}" class="block w-full text-left px-4 py-2 text-sm text-primary-600 hover:bg-primary-50 transition-medium focus-visible">Profile</a>
+              <form method="POST" action="{% url 'student_logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-danger-600 hover:bg-primary-50 transition-medium focus-visible">Logout</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  
+  <!-- Mobile Sidebar Toggle -->
+  <button id="mobileSidebarToggle" class="fixed top-4 left-4 z-50 p-2 rounded-md bg-primary-700 text-white shadow-lg focus:outline-none focus-visible lg:hidden" aria-label="Toggle mobile sidebar">
+    <i class='bx bx-menu text-2xl'></i>
+  </button>
+  
+  <!-- Main Content -->
+  <main class="ml-0 lg:ml-64 transition-slow">
+    <div class="px-4 sm:px-6 py-6">
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-primary-800">Your Cart</h1>
+          <a href="{% url 'view_menu' %}" class="text-sm text-accent-600 hover:text-accent-700 transition-medium mt-2 inline-block">← Back to Menu</a>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div id="clock" class="text-sm font-medium text-primary-600 bg-primary-100 px-3 py-1 rounded-md"></div>
+          <button id="darkModeToggle" class="p-2 rounded-md bg-primary-100 text-primary-600 hover:bg-primary-200 transition-medium focus-visible" aria-label="Toggle dark mode">
+            <i class='bx bx-moon text-lg'></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Messages -->
+      {% if messages %}
+        <div class="mb-6 p-4 bg-white rounded-lg shadow-sm border-l-4 border-accent-500 animate-fade-in modern-shadow">
+          <ul class="space-y-2">
+            {% for message in messages %}
+              <li class="text-primary-700 font-medium {% if message.tags == 'error' %}text-danger-600{% elif message.tags == 'success' %}text-success-600{% endif %}">{{ message }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+      
+      <!-- Cart Content -->
+      <div class="bg-white p-6 sm:p-8 rounded-xl shadow-sm modern-shadow max-w-4xl mx-auto">
+        {% if cart_items %}
+  <div class="flex justify-end mb-4">
+    <button id="clearCartBtn" class="px-4 py-2 bg-danger-600 text-white rounded-lg hover:bg-danger-700 transition-medium focus-visible">Clear Cart</button>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="bg-primary-600 text-white">
+          <th class="py-3 px-4 text-left">Item</th>
+          <th class="py-3 px-4 text-left">Price (₹)</th>
+          <th class="py-3 px-4 text-left">Quantity</th>
+          <th class="py-3 px-4 text-left">Subtotal (₹)</th>
+          <th class="py-3 px-4 text-left">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cart_item in cart_items %}
+          <tr class="border-b border-primary-200">
+            <td class="py-3 px-4">
+              {{ cart_item.item.name }}
+              <br>
+              <small class="text-primary-500">In stock: <span id="stock-{{ cart_item.id }}">{{ cart_item.item.quantity_available }}</span></small>
+              <small id="stock-warning-{{ cart_item.id }}" class="text-danger-600 hidden">Quantity exceeds available stock!</small>
+            </td>
+            <td class="py-3 px-4">₹<span id="price-{{ cart_item.id }}">{{ cart_item.item.price|floatformat:2 }}</span></td>
+            <td class="py-3 px-4">
+              <form method="POST" action="{% url 'update_cart_item' cart_item.id %}" class="qty-form" data-item-id="{{ cart_item.id }}">
+                {% csrf_token %}
+                <div class="flex items-center gap-2">
+                  <button type="button" onclick="decreaseQty('{{ cart_item.id }}')" class="px-2 py-1 bg-primary-100 text-primary-600 rounded hover:bg-primary-200 transition-medium focus-visible">-</button>
+                  <input
+                    type="number"
+                    name="quantity"
+                    id="qty-{{ cart_item.id }}"
+                    value="{{ cart_item.quantity }}"
+                    min="1"
+                    max="{{ cart_item.item.quantity_available }}"
+                    required
+                    class="w-16 px-2 py-1 border border-primary-300 rounded text-center focus:outline-none focus:ring-accent-500 focus:border-accent-500"
+                  />
+                  <button type="button" onclick="increaseQty('{{ cart_item.id }}', {{ cart_item.item.quantity_available }})" class="px-2 py-1 bg-primary-100 text-primary-600 rounded hover:bg-primary-200 transition-medium focus-visible">+</button>
+                  <button type="submit" class="px-2 py-1 bg-accent-600 text-white rounded hover:bg-accent-700 transition-medium focus-visible">Update</button>
+                </div>
+              </form>
+            </td>
+            <td class="py-3 px-4">₹<span id="subtotal-{{ cart_item.id }}">{{ cart_item.subtotal|floatformat:2 }}</span></td>
+            <td class="py-3 px-4">
+              <a href="{% url 'remove_from_cart' cart_item.id %}" class="remove-btn text-danger-600 hover:text-danger-700 transition-medium focus-visible" onclick="confirmRemove(event, '{{ cart_item.id }}', '{{ cart_item.item.name }}')">Remove</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="flex justify-end mt-4">
+    <div class="text-lg font-bold text-primary-800">Total: ₹<span id="cartTotal">{{ total|floatformat:2 }}</span></div>
+  </div>
+  <div class="flex justify-center mt-6">
+    <button onclick="openModal()" class="px-4 py-2 bg-success-600 text-white rounded-lg hover:bg-success-700 transition-medium focus-visible">Place Order</button>
+  </div>
+{% endif %}
+      </div>
+    </div>
+  </main>
+  
+  <!-- Payment Modal -->
+  <div id="paymentModal" class="modal-overlay" aria-modal="true" role="dialog">
+    <div class="modal-content bg-white p-6 rounded-xl shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+      <div class="flex justify-between items-center mb-5">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Select Payment Method</h2>
+        <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors focus:outline-none" aria-label="Close modal">
+          <i class='bx bx-x text-xl'></i>
+        </button>
+      </div>
+      <button onclick="toggleOrderSummary()" class="flex items-center text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors mb-4">
+        <i class='bx bx-chevron-down mr-1' id="summaryToggleIcon"></i> Order Summary
+      </button>
+      <div id="orderSummary" class="hidden mb-4 p-4 bg-gray-50 rounded-lg dark:bg-gray-700">
+        <h3 class="text-sm font-medium text-gray-700 dark:text-gray-200">Order Items:</h3>
+        <ul class="text-xs text-gray-600 dark:text-gray-300 mt-1 space-y-1">
+          {% for cart_item in cart_items %}
+            <li>{{ cart_item.quantity }} × {{ cart_item.item.name }} — ₹{{ cart_item.subtotal|floatformat:2 }}</li>
+          {% endfor %}
+        </ul>
+        <p class="text-sm font-bold text-gray-800 dark:text-gray-100 mt-2">Total: ₹{{ total|floatformat:2 }}</p>
+      </div>
+      <form method="POST" action="{% url 'place_order' %}" id="paymentForm">
+        {% csrf_token %}
+        <div class="space-y-3">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="payment_method" value="COD" onchange="showExtraFields(this.value)" required class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:checked:bg-blue-600 dark:focus:ring-blue-600" />
+            <span class="text-sm text-gray-700 dark:text-gray-200">Cash on Delivery</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="payment_method" value="Wallet" onchange="showExtraFields(this.value)" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:checked:bg-blue-600 dark:focus:ring-blue-600" />
+            <span class="text-sm text-gray-700 dark:text-gray-200">Wallet Balance</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="payment_method" value="NetBanking" onchange="showExtraFields(this.value)" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:checked:bg-blue-600 dark:focus:ring-blue-600" />
+            <span class="text-sm text-gray-700 dark:text-gray-200">Net Banking</span>
+          </label>
+          <div id="walletSection" class="extra-fields hidden p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
+            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-200">Wallet Balance</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300">₹{{ student.wallet_balance }}</p>
+          </div>
+          <div id="netBankingSection" class="extra-fields hidden space-y-2">
+            <input
+              type="text"
+              name="netbank_username"
+              placeholder="NetBanking Username"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+            />
+            <input
+              type="password"
+              name="netbank_password"
+              placeholder="NetBanking Password"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+            />
+          </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+          <button type="button" onclick="closeModal()" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors focus:outline-none">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors focus:outline-none">Confirm Payment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+ <!-- Success Modal -->
+ {% if recent_order %}
+ <div id="successModal" class="modal-overlay show" aria-modal="true" role="dialog">
+   <div class="modal-content bg-white p-8 rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto border border-primary-200 dark:bg-primary-100 dark:border-primary-200">
+     <div class="flex justify-between items-center mb-6">
+       <h2 class="text-2xl font-bold text-primary-800 dark:text-primary-700">Order Placed Successfully!</h2>
+       <button onclick="closeSuccessModal()" class="text-primary-600 hover:text-primary-800 transition-medium focus-visible" aria-label="Close modal">
+         <i class='bx bx-x text-2xl'></i>
+       </button>
+     </div>
+     <p class="text-primary-700 dark:text-primary-600"><strong>Order ID:</strong> {{ recent_order.id }}</p>
+     <img id="qrImage" src="{{ qr_code_url }}" alt="QR Code" class="mx-auto mt-4 rounded-lg border border-primary-200" width="200" height="200">
+     <a class="download-btn block text-center mt-4 px-6 py-2 bg-success-600 text-white rounded-lg hover:bg-success-700 transition-medium focus-visible" id="downloadBtn" download="order_{{ recent_order.id }}_qr.png" href="{{ qr_code_url }}">Download QR Code</a>
+     <button onclick="toggleOrderDetails()" class="flex items-center text-sm text-accent-600 hover:text-accent-700 transition-medium mt-4 mx-auto">
+       <i class='bx bx-chevron-down mr-1' id="detailsToggleIcon"></i> Order Details
+     </button>
+     <div id="orderDetails" class="hidden mt-4 p-4 bg-primary-50 rounded-lg dark:bg-primary-200">
+       <h3 class="text-base font-medium text-primary-700 dark:text-primary-600">Order Items:</h3>
+       <ul class="text-sm text-primary-600 dark:text-primary-500 mt-2 space-y-1">
+         {% for item in recent_order.items.all %}
+           <li>{{ item.quantity }} × {{ item.item.name }} — ₹{{ item.price }}</li>
+         {% endfor %}
+       </ul>
+     </div>
+     <div class="flex justify-center mt-6">
+       <button onclick="closeSuccessModal()" class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-medium focus-visible">Close</button>
+     </div>
+   </div>
+ </div>
+ {% endif %}
+  
+  <script>
+    // Clock
+    function updateClock() {
+      const now = new Date();
+      const options = { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+      const timeString = now.toLocaleTimeString('en-IN', options);
+      document.getElementById('clock').textContent = timeString;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // Dark Mode Toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      darkModeToggle.innerHTML = isDark ? 
+        '<i class="bx bx-sun text-lg"></i>' : 
+        '<i class="bx bx-moon text-lg"></i>';
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+    darkModeToggle.addEventListener('click', toggleDarkMode);
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark');
+      darkModeToggle.innerHTML = '<i class="bx bx-sun text-lg"></i>';
+    }
+
+    // Sidebar Toggle
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
+    const mobileBackdrop = document.getElementById('mobileBackdrop');
+    
+    function toggleSidebar() {
+      sidebar.classList.toggle('sidebar-collapsed');
+      const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
+      sidebarToggle.innerHTML = isCollapsed ? 
+        '<i class="bx bx-chevron-right text-2xl"></i>' : 
+        '<i class="bx bx-chevron-left text-2xl"></i>';
+      
+      const mainContent = document.querySelector('main');
+      if (isCollapsed) {
+        mainContent.classList.remove('lg:ml-64');
+        mainContent.classList.add('lg:ml-20');
+      } else {
+        mainContent.classList.remove('lg:ml-20');
+        mainContent.classList.add('lg:ml-64');
+      }
+    }
+    
+    sidebarToggle.addEventListener('click', toggleSidebar);
+    
+    function toggleMobileSidebar() {
+      sidebar.classList.toggle('open');
+      mobileBackdrop.classList.toggle('hidden');
+      document.body.classList.toggle('overflow-hidden');
+    }
+    
+    mobileSidebarToggle.addEventListener('click', toggleMobileSidebar);
+    mobileBackdrop.addEventListener('click', toggleMobileSidebar);
+    
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (window.innerWidth < 1024) {
+          toggleMobileSidebar();
+        }
+        window.location.href = link.getAttribute('href');
+      });
+    });
+    
+    // Profile Dropdown
+    const profileBtn = document.getElementById('profileBtn');
+    const profileDropdown = document.getElementById('profileDropdown');
+    
+    profileBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      profileDropdown.classList.toggle('hidden');
+      profileBtn.setAttribute('aria-expanded', !profileDropdown.classList.contains('hidden'));
+    });
+    
+    document.addEventListener('click', (e) => {
+      if (!profileDropdown.contains(e.target) && !profileBtn.contains(e.target)) {
+        profileDropdown.classList.add('hidden');
+        profileBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+    
+    profileDropdown.addEventListener('click', (e) => e.stopPropagation());
+
+    // Live Total Calculation
+    function updateCartTotal() {
+      let total = 0;
+      document.querySelectorAll('.qty-form').forEach(form => {
+        const itemId = form.dataset.itemId;
+        const quantity = parseInt(document.getElementById(`qty-${itemId}`).value) || 1;
+        const price = parseFloat(document.getElementById(`price-${itemId}`).textContent);
+        const subtotal = quantity * price;
+        document.getElementById(`subtotal-${itemId}`).textContent = subtotal.toFixed(2);
+        total += subtotal;
+      });
+      document.getElementById('cartTotal').textContent = total.toFixed(2);
+    }
+
+    function increaseQty(id, maxQty) {
+      const input = document.getElementById(`qty-${id}`);
+      let value = parseInt(input.value) || 1;
+      if (value < maxQty) {
+        input.value = value + 1;
+        checkStock(id, maxQty);
+        updateCartTotal();
+      } else {
+        showStockWarning(id);
+      }
+    }
+
+    function decreaseQty(id) {
+      const input = document.getElementById(`qty-${id}`);
+      let value = parseInt(input.value) || 1;
+      if (value > 1) {
+        input.value = value - 1;
+        checkStock(id, parseInt(input.max));
+        updateCartTotal();
+      }
+    }
+
+    function checkStock(id, maxQty) {
+      const input = document.getElementById(`qty-${id}`);
+      const warning = document.getElementById(`stock-warning-${id}`);
+      if (parseInt(input.value) > maxQty) {
+        warning.classList.remove('hidden');
+        input.classList.add('border-danger-500');
+      } else {
+        warning.classList.add('hidden');
+        input.classList.remove('border-danger-500');
+      }
+    }
+
+    function showStockWarning(id) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Stock Limit',
+        text: 'Selected quantity exceeds available stock!',
+        confirmButtonColor: '#f39c12'
+      });
+    }
+
+    // Confirm Remove Item
+    function confirmRemove(event, id, itemName) {
+      event.preventDefault();
+      Swal.fire({
+        title: 'Remove Item',
+        text: `Are you sure you want to remove "${itemName}" from your cart?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e74c3c',
+        cancelButtonColor: '#7f8c8d',
+        confirmButtonText: 'Yes, remove it'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = document.querySelector(`a[href*='remove_from_cart/${id}']`).href;
+        }
+      });
+    }
+
+    // Clear Cart
+    const clearCartBtn = document.getElementById('clearCartBtn');
+    if (clearCartBtn) {
+      clearCartBtn.addEventListener('click', () => {
+        Swal.fire({
+          title: 'Clear Cart',
+          text: 'Are you sure you want to remove all items from your cart?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#e74c3c',
+          cancelButtonColor: '#7f8c8d',
+          confirmButtonText: 'Yes, clear it'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Assuming a backend endpoint exists for clearing the cart
+            fetch('', {
+              method: 'POST',
+              headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+              }
+            }).then(response => {
+              if (response.ok) {
+                window.location.reload();
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'Failed to clear cart. Please try again.'
+                });
+              }
+            });
+          }
+        });
+      });
+    }
+
+    // Modal Functions
+    function openModal() {
+      document.getElementById('paymentModal').classList.add('show');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('paymentModal');
+      modal.classList.remove('show');
+      showExtraFields(null);
+    }
+
+    function closeSuccessModal() {
+      const modal = document.getElementById('successModal');
+      modal.classList.remove('show');
+      history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    function showExtraFields(method) {
+      document.getElementById('walletSection').classList.toggle('hidden', method !== 'Wallet');
+      document.getElementById('netBankingSection').classList.toggle('hidden', method !== 'NetBanking');
+    }
+
+    function toggleOrderSummary() {
+      const summary = document.getElementById('orderSummary');
+      const toggleIcon = document.getElementById('summaryToggleIcon');
+      summary.classList.toggle('hidden');
+      toggleIcon.classList.toggle('bx-chevron-down');
+      toggleIcon.classList.toggle('bx-chevron-up');
+    }
+
+    function toggleOrderDetails() {
+      const details = document.getElementById('orderDetails');
+      const toggleIcon = document.getElementById('detailsToggleIcon');
+      details.classList.toggle('hidden');
+      toggleIcon.classList.toggle('bx-chevron-down');
+      toggleIcon.classList.toggle('bx-chevron-up');
+    }
+
+    // Initialize quantity inputs
+    document.querySelectorAll('.qty-form input[type="number"]').forEach(input => {
+      input.addEventListener('input', () => {
+        const id = input.id.replace('qty-', '');
+        checkStock(id, parseInt(input.max));
+        updateCartTotal();
+      });
+    });
+
+    // Highlight active nav link
+    const currentPath = window.location.pathname;
+    document.querySelectorAll('.nav-link').forEach(link => {
+      if (link.getAttribute('href') === currentPath) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+    
+    // Adjust sidebar on window resize
+    function handleResize() {
+      if (window.innerWidth >= 1024) {
+        sidebar.classList.remove('mobile-sidebar');
+        sidebar.classList.remove('open');
+        mobileBackdrop.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      } else {
+        sidebar.classList.add('mobile-sidebar');
+      }
+    }
+    
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    // Initial total calculation
+    updateCartTotal();
+  </script>
+</body>
+</html>

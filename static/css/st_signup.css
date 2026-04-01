@@ -1,0 +1,377 @@
+
+.all-input {
+  font-size: 1rem;
+  padding: 0.8rem 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #ffffff80;
+  color: black;
+  transition: 0.3s ease;
+}
+
+.all-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--form-focus-bg-clr);
+  background-color: #ffffff;
+}
+
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.8rem 3rem;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.logo {
+  font-size: 2.3rem;
+  color: var(--text-clr);
+  text-decoration: none;
+}
+
+.navbar {
+  display: flex;
+}
+
+.nav-items {
+  display: flex;
+  transition: all 0.3s ease-in-out;
+}
+
+.nav-item {
+  margin-right: 2rem;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--nav-txt-clr);
+  font-size: 1.5rem;
+  position: relative;
+}
+
+.nav-link::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 0.1rem;
+  background-color: var(--primary-clr-alt);
+  bottom: 0;
+  transform: scaleX(0);
+  transition: 0.2s ease;
+}
+
+.nav-link:hover::before {
+  transform: scaleX(1);
+}
+/* Container for input and textarea fields */
+.input-field {
+  position: relative;
+  margin-bottom: 1.8rem;
+  width: 100%;
+}
+
+/* Text inputs and textareas */
+.input-field input,
+.input-field textarea {
+  width: 100%;
+  padding: 1.1rem 1rem 1.1rem 1rem;
+  font-size: 1.1rem;
+  color: #222;
+  background: rgba(255 255 255 / 0.95);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgb(0 0 0 / 0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-family: 'Times New Roman', Times, serif;
+  resize: vertical; /* textareas can resize vertically */
+  min-height: 3.5rem;
+  box-sizing: border-box;
+}
+
+/* Focus effect */
+.input-field input:focus,
+.input-field textarea:focus {
+  outline: none;
+  border-color: var(--dark-blue);
+  box-shadow: 0 0 8px var(--dark-blue);
+  background: #fff;
+}
+
+/* Labels with floating effect */
+.input-field label {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  font-size: 1.1rem;
+  pointer-events: none;
+  background-color: rgba(255 255 255 / 0.95);
+  padding: 0 0.3rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+/* Move label up when input focused or has content */
+.input-field input:focus + label,
+.input-field textarea:focus + label,
+.input-field input:not(:placeholder-shown) + label,
+.input-field textarea:not(:placeholder-shown) + label {
+  top: -0.7rem;
+  left: 0.85rem;
+  font-size: 0.85rem;
+  color: var(--dark-blue);
+  font-weight: 600;
+  box-shadow: 0 0 8px var(--dark-blue);
+}
+
+/* Signup button */
+form button[type="submit"] {
+  width: 100%;
+  padding: 1.1rem 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  background: var(--dark-blue);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 6px 12px rgb(30 58 138 / 0.5);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  font-family: 'Pompiere', cursive;
+  user-select: none;
+}
+
+form button[type="submit"]:hover {
+  background: var(--bright-orange);
+  box-shadow: 0 6px 14px rgb(179 101 37 / 0.7);
+}
+
+/* For textarea specifically */
+textarea.input-field textarea {
+  min-height: 120px;
+}
+
+.menu-togglers {
+  display: none;
+}
+
+/* Login Section */
+.login-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 1rem 4rem;
+  flex: 1;
+}
+
+.login-container {
+  background: var(--form-bg-clr);
+  padding: 3rem 2rem;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.login-title {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary-clr-alt);
+}
+
+.login-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  color: var(--text-clr);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-control {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.form-label {
+  font-size: 1.2rem;
+  margin-bottom: 0.3rem;
+  color: var(--text-clr);
+}
+
+.all-input {
+  font-size: 1rem;
+  padding: 0.8rem 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #ffffff80;
+  color: var(--bg-clr);
+  transition: 0.3s ease;
+}
+
+.all-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--form-focus-bg-clr);
+  background-color: #ffffff;
+}
+
+.send-msg-btn {
+  background-color: var(--primary-clr);
+  color: var(--text-clr-bg);
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 0.8rem 0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 300ms ease;
+}
+
+.send-msg-btn:hover {
+  background-color: var(--second-clr-alt);
+}
+
+/* Footer */
+.footer {
+  margin-top: 60px;
+  padding: 1rem 0;
+  text-align: center;
+}
+
+.lower-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--text-clr);
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.lower-footer-elt {
+  flex: 1;
+  text-align: center;
+}
+
+.policy-link {
+  color: var(--primary-clr-alt);
+  text-decoration: none;
+}
+
+/* Message Popups */
+.message-container {
+  margin-bottom: 1.5rem;
+}
+
+.popup-message {
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1rem;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.popup-message.error,
+.popup-message.danger {
+  background-color: #ff4d4d;
+  color: white;
+  box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
+}
+
+.popup-message.success {
+  background-color: #4CAF50;
+  color: white;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-items {
+    flex-direction: column;
+    background-color: #3e586d;
+    position: absolute;
+    top: 5rem;
+    right: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    display: none;
+    width: 200px;
+    z-index: 1000;
+  }
+
+  .nav-item {
+    margin: 0.5rem 0;
+  }
+
+  .menu-togglers {
+    display: block;
+    font-size: 2rem;
+    cursor: pointer;
+    color: var(--text-clr);
+  }
+
+  .login-container {
+    padding: 2rem 1rem;
+    width: 90%;
+  }
+
+  .login-title {
+    font-size: 2rem;
+  }
+
+  .login-subtitle {
+    font-size: 1rem;
+  }
+
+  .form-label,
+  .all-input {
+    font-size: 1rem;
+  }
+
+  .send-msg-btn {
+    font-size: 1rem;
+  }
+
+  .footer {
+    padding: 1.5rem 1rem;
+  }
+
+  .lower-footer {
+    font-size: 0.9rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .lower-footer-elt {
+    text-align: center;
+  }
+}

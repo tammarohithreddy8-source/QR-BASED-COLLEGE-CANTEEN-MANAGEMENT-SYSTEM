@@ -1,0 +1,502 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Orders Report - eCanteen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              200: '#e2e8f0',
+              300: '#cbd5e1',
+              400: '#94a3b8',
+              500: '#64748b',
+              600: '#475569',
+              700: '#334155',
+              800: '#1e293b',
+              900: '#0f172a',
+            },
+            accent: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            },
+            success: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            },
+            warning: {
+              50: '#fefce8',
+              100: '#fef9c3',
+              200: '#fef08a',
+              300: '#fde047',
+              400: '#facc15',
+              500: '#eab308',
+              600: '#ca8a04',
+              700: '#a16207',
+              800: '#854d0e',
+              900: '#713f12',
+            },
+            danger: {
+              50: '#fef2f2',
+              100: '#fee2e2',
+              200: '#fecaca',
+              300: '#fca5a5',
+              400: '#f87171',
+              500: '#ef4444',
+              600: '#dc2626',
+              700: '#b91c1c',
+              800: '#991b1b',
+              900: '#7f1d1d',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-in-out',
+            'slide-down': 'slideDown 0.3s ease-out',
+            'slide-in-left': 'slideInLeft 0.3s ease-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideDown: {
+              '0%': { transform: 'translateY(-10px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+            slideInLeft: {
+              '0%': { transform: 'translateX(-20px)', opacity: '0' },
+              '100%': { transform: 'translateX(0)', opacity: '1' },
+            },
+          },
+        },
+      },
+    }
+  </script>
+  
+  <style>
+    /* Sidebar styles */
+    .sidebar-collapsed {
+      width: 5rem !important;
+    }
+    .sidebar-collapsed .logo-text,
+    .sidebar-collapsed .nav-text,
+    .sidebar-collapsed .profile-text {
+      display: none !important;
+    }
+    .sidebar-collapsed .nav-icon,
+    .sidebar-collapsed .profile-icon {
+      margin-right: 0 !important;
+    }
+    .sidebar-collapsed .nav-link {
+      justify-content: center !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    .sidebar-collapsed .profile {
+      justify-content: center !important;
+    }
+    
+    /* Mobile sidebar */
+    .mobile-sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    .mobile-sidebar.open {
+      transform: translateX(0);
+    }
+    
+    /* Custom scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    
+    /* Smooth transitions */
+    .transition-slow {
+      transition: all 0.3s ease;
+    }
+    .transition-medium {
+      transition: all 0.2s ease;
+    }
+    .transition-fast {
+      transition: all 0.1s ease;
+    }
+    
+    /* Active nav link */
+    .nav-link.active {
+      background-color: rgba(14, 165, 233, 0.1);
+      color: #0ea5e9;
+      border-left: 4px solid #0ea5e9;
+    }
+    
+    /* Modern shadow */
+    .modern-shadow {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Better focus states */
+    .focus-visible {
+      outline: 2px solid #0ea5e9;
+      outline-offset: 2px;
+    }
+    
+    /* Backdrop for mobile sidebar */
+    .backdrop {
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 30;
+    }
+
+    /* Background image */
+    body {
+      background-image: url("{% static 'images/banner.jpg' %}");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+
+    /* Table styles */
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .report-table th,
+    .report-table td {
+      padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+    }
+
+    .report-table th {
+      background-color: #0ea5e9;
+      color: white;
+      font-weight: 600;
+    }
+
+    .report-table tr:hover {
+      background-color: #f8fafc;
+    }
+
+    .report-table tbody tr.empty td {
+      text-align: center;
+      font-style: italic;
+      color: #64748b;
+      padding: 1.5rem;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-primary-50 to-primary-100 bg-fixed min-h-screen font-sans antialiased">
+  <!-- Mobile Sidebar Backdrop -->
+  <div id="mobileBackdrop" class="fixed inset-0 backdrop hidden lg:hidden z-30"></div>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen bg-primary-800 text-white shadow-xl transition-slow lg:translate-x-0 mobile-sidebar">
+    <div class="flex flex-col h-full">
+      <!-- Logo -->
+      <div class="flex items-center justify-between px-6 py-5">
+        <div class="flex items-center space-x-3">
+          <i class='bx bx-food-menu text-2xl text-accent-400'></i>
+          <span class="logo-text text-xl font-bold">eCanteen</span>
+        </div>
+        <button id="sidebarToggle" class="text-primary-200 hover:text-white focus:outline-none transition-medium focus-visible">
+          <i class='bx bx-chevron-left text-2xl'></i>
+        </button>
+      </div>
+      
+      <!-- Navigation -->
+      <nav class="flex-1 px-4 py-2 overflow-y-auto custom-scrollbar">
+        <ul class="space-y-2">
+          <li>
+            <a href="{% url 'admin_dashboard' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link focus-visible">
+              <i class='bx bx-home nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_manage' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link focus-visible">
+              <i class='bx bx-group nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">Manage Staff</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_report' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link active focus-visible">
+              <i class='bx bx-bar-chart nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">View Reports</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_feedback' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link focus-visible">
+              <i class='bx bx-comment nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">View Feedback</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'download_report' %}" class="flex items-center px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium nav-link focus-visible">
+              <i class='bx bx-download nav-icon mr-3 text-lg'></i>
+              <span class="nav-text">Download Excel</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <!-- Bottom Section -->
+      <div class="px-4 py-4 border-t border-primary-700">
+        <!-- Profile -->
+        <div class="relative">
+          <button id="profileBtn" class="flex items-center w-full px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-700 hover:text-white transition-medium focus:outline-none focus-visible">
+           
+            <span class="profile-text text-sm font-medium">{{ user.get_full_name|default:user.username }}</span>
+            <i class='bx bx-chevron-down ml-auto text-lg'></i>
+          </button>
+          
+          <!-- Profile Dropdown -->
+          <div id="profileDropdown" class="hidden absolute bottom-full left-0 mb-2 w-full bg-white rounded-lg shadow-xl z-50 border border-primary-200 animate-slide-down">
+            <div class="py-1">
+            
+              <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-danger-600 hover:bg-primary-50 transition-medium focus:outline-none focus-visible">
+                  Logout
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile Sidebar Toggle -->
+  <button id="mobileSidebarToggle" class="fixed top-4 left-4 z-50 p-2 rounded-md bg-primary-700 text-white shadow-lg focus:outline-none focus-visible lg:hidden">
+    <i class='bx bx-menu text-2xl'></i>
+  </button>
+
+  <!-- Main Content -->
+  <main class="ml-0 lg:ml-64 transition-slow">
+    <div class="px-4 sm:px-6 py-6">
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 class="text-2xl font-bold text-primary-800">Order Details</h1>
+        
+        <!-- Date Filter Form -->
+        <form method="get" class="flex items-center space-x-2">
+          <label for="dateFilter" class="text-sm font-medium text-primary-700">Filter by Date:</label>
+          <input type="date" id="dateFilter" name="date" value="{{ date_filter }}" 
+            class="px-3 py-1 border border-primary-300 rounded-md focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-medium">
+          <button type="submit" class="px-3 py-1 bg-accent-500 text-white rounded-md hover:bg-accent-600 transition-medium focus-visible">
+            Filter
+          </button>
+          {% if date_filter %}
+            <a href="{% url 'admin_report' %}" class="px-3 py-1 text-danger-500 hover:text-danger-600 transition-medium focus-visible">
+              Clear
+            </a>
+          {% endif %}
+        </form>
+      </div>
+      
+      {% if messages %}
+        <div class="mb-6 p-4 bg-white rounded-lg shadow-sm border-l-4 border-accent-500 animate-fade-in modern-shadow">
+          {% for msg in messages %}
+            <p class="text-primary-700 font-medium">{{ msg }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+      
+      <!-- Orders Table -->
+      <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm modern-shadow overflow-x-auto">
+        <table class="report-table w-full">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Student Username</th>
+              <th>Total Price</th>
+              <th>Status</th>
+              <th>Created At</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+            <tr>
+              <td>{{ order.id }}</td>
+              <td>{{ order.user.username }}</td>
+              <td>₹{{ order.total_price }}</td>
+              <td>
+                <span class="px-2 py-1 text-xs rounded-full 
+                  {% if order.status == 'completed' %}bg-success-100 text-success-800
+                  {% elif order.status == 'pending' %}bg-warning-100 text-warning-800
+                  {% elif order.status == 'cancelled' %}bg-danger-100 text-danger-800
+                  {% else %}bg-primary-100 text-primary-800{% endif %}">
+                  {{ order.status }}
+                </span>
+              </td>
+              <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr class="empty">
+              <td colspan="5">No orders found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        
+        <!-- Pagination -->
+        <div class="flex justify-center items-center mt-6 space-x-4 text-sm font-medium text-primary-700">
+          {% if orders.has_previous %}
+            <a href="?{% if date_filter %}date={{ date_filter }}&{% endif %}page={{ orders.previous_page_number }}" 
+              class="px-3 py-1 border border-primary-300 rounded-md hover:bg-primary-50 transition-medium focus-visible">
+              &laquo; Previous
+            </a>
+          {% else %}
+            <span class="px-3 py-1 text-primary-400">&laquo; Previous</span>
+          {% endif %}
+          
+          <span>Page {{ orders.number }} of {{ orders.paginator.num_pages }}</span>
+          
+          {% if orders.has_next %}
+            <a href="?{% if date_filter %}date={{ date_filter }}&{% endif %}page={{ orders.next_page_number }}" 
+              class="px-3 py-1 border border-primary-300 rounded-md hover:bg-primary-50 transition-medium focus-visible">
+              Next &raquo;
+            </a>
+          {% else %}
+            <span class="px-3 py-1 text-primary-400">Next &raquo;</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Sidebar Toggle
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
+    const mobileBackdrop = document.getElementById('mobileBackdrop');
+    
+    function toggleSidebar() {
+      sidebar.classList.toggle('sidebar-collapsed');
+      const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
+      sidebarToggle.innerHTML = isCollapsed ? 
+        '<i class="bx bx-chevron-right text-2xl"></i>' : 
+        '<i class="bx bx-chevron-left text-2xl"></i>';
+      
+      // Adjust main content margin when collapsing
+      const mainContent = document.querySelector('main');
+      if (isCollapsed) {
+        mainContent.classList.remove('lg:ml-64');
+        mainContent.classList.add('lg:ml-20');
+      } else {
+        mainContent.classList.remove('lg:ml-20');
+        mainContent.classList.add('lg:ml-64');
+      }
+    }
+    
+    sidebarToggle.addEventListener('click', toggleSidebar);
+    
+    // Mobile Sidebar Toggle
+    function toggleMobileSidebar() {
+      sidebar.classList.toggle('open');
+      mobileBackdrop.classList.toggle('hidden');
+      document.body.classList.toggle('overflow-hidden');
+    }
+    
+    mobileSidebarToggle.addEventListener('click', toggleMobileSidebar);
+    mobileBackdrop.addEventListener('click', toggleMobileSidebar);
+    
+    // Close mobile sidebar when clicking on nav links
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth < 1024) {
+          toggleMobileSidebar();
+        }
+      });
+    });
+    
+    // Profile Dropdown
+    const profileBtn = document.getElementById('profileBtn');
+    const profileDropdown = document.getElementById('profileDropdown');
+    
+    profileBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      profileDropdown.classList.toggle('hidden');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', () => {
+      profileDropdown.classList.add('hidden');
+    });
+    
+    // Prevent dropdown from closing when clicking inside
+    profileDropdown.addEventListener('click', (e) => e.stopPropagation());
+    
+    // Highlight active nav link
+    const currentPath = window.location.pathname;
+    document.querySelectorAll('.nav-link').forEach(link => {
+      if (link.getAttribute('href') === currentPath) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+    
+    // Adjust sidebar on window resize
+    function handleResize() {
+      if (window.innerWidth >= 1024) {
+        sidebar.classList.remove('mobile-sidebar');
+        sidebar.classList.remove('open');
+        mobileBackdrop.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      } else {
+        sidebar.classList.add('mobile-sidebar');
+      }
+    }
+    
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Run once on load
+  </script>
+</body>
+</html>

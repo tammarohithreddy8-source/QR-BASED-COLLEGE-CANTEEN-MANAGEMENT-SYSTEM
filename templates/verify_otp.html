@@ -1,0 +1,15 @@
+
+{% block content %}
+  <h2 style="color:#2c3e50;">Verify OTP</h2>
+  <p>Please enter the OTP sent to your email.</p>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.otp.label_tag }}<br/>
+    {{ form.otp }}<br/><br/>
+    {% if form.otp.errors %}
+      <div style="color:red;">{{ form.otp.errors }}</div>
+    {% endif %}
+    <button type="submit" style="background:#2980b9; color:white; padding:8px 15px; border:none; border-radius:5px;">Verify OTP</button>
+  </form>
+{% endblock %}

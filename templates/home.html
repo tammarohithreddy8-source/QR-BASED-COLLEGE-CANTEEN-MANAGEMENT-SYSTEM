@@ -1,0 +1,217 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>eCanteen</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet" />
+    <style>
+
+  /* Success message appearance */
+  #success-message {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #22c55e; /* Tailwind green-500 */
+    color: #ffffff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    z-index: 9999;
+    opacity: 1;
+    animation: fadeOut 2s ease-in-out 2s forwards;
+  }
+
+  /* Fade-out keyframes */
+  @keyframes fadeOut {
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+       body {
+    background-image: url("{% static 'images/banner.jpg' %}");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--text-clr);
+    min-height: 100vh;
+    
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+      .navbar {
+        transition: all 0.3s ease;
+      }
+      .nav-link:hover {
+        color: #ff6b6b !important;
+        transform: translateY(-2px);
+      }
+      .hero-lady-img {
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+      }
+      .hero-lady-img:hover {
+        transform: scale(1.05);
+      }
+      .menu-toggle {
+        cursor: pointer;
+        font-size: 2rem;
+        color: white;
+      }
+      @media (max-width: 768px) {
+        .navbar {
+          display: none;
+        }
+        .navbar.active {
+          display: block;
+          background: rgba(0, 0, 0, 0.8);
+          position: absolute;
+          top: 60px;
+          left: 0;
+          width: 100%;
+          padding: 20px;
+        }
+        .nav-items {
+          flex-direction: column;
+          align-items: center;
+        }
+        .nav-item {
+          margin: 10px 0;
+        }
+      }
+
+ 
+    </style>
+  </head>
+
+  <body>
+    <header class="container mx-auto px-4 py-6 flex justify-between items-center">
+      <a href="#hero" class="logo text-3xl font-bold text-white transition duration-300 hover:text-yellow-300">eCanteen</a>
+      <nav class="navbar flex items-center">
+        <ul class="nav-items flex space-x-6">
+          <li class="nav-item"><a href="#hero" class="nav-link text-white text-lg font-medium transition duration-300">Home</a></li>
+         
+          <li class="nav-item"><a href="#menu" class="nav-link text-white text-lg font-medium transition duration-300">View Menu</a></li>
+          <li class="nav-item"><a href="#contact" class="nav-link text-white text-lg font-medium transition duration-300">Contact Us</a></li>
+          <li class="nav-item"><a href="{% url 'admin_login' %}" class="nav-link text-white text-lg font-medium transition duration-300">Admin Login</a></li>
+          
+          <li class="nav-item"><a href="{% url 'staff_login' %}" class="nav-link text-white text-lg font-medium transition duration-300">Canteen Login</a></li>
+          <li class="nav-item"><a href="{% url 'student_login' %}" class="nav-link text-white text-lg font-medium transition duration-300">Student Login</a></li>
+        </ul>
+      </nav>
+      <div class="menu-togglers md:hidden">
+        <i class="bx bx-menu menu-toggle transition duration-300"></i>
+      </div>
+    </header>
+    {% if messages %}
+    {% for message in messages %}
+      {% if 'contact' in message.tags %}
+        <div id="success-message" class="mb-4 bg-green-500 text-white p-3 rounded shadow">
+          {{ message }}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  
+    <main id="hero" class="main">
+      <section class="section section-one container mx-auto px-4 py-16 flex flex-col md:flex-row items-center">
+        <div class="hook-container flex-1 text-center md:text-left">
+          <h1 class="hook-title text-5xl md:text-6xl font-extrabold text-white mb-4 leading-tight">
+            "The only place where lectures are forgotten and friendships are cooked."
+          </h1>
+          <h2 class="hook-sub_title text-2xl md:text-3xl text-yellow-200 font-medium">
+            "One table, many stories — that's our canteen culture."
+          </h2>
+        </div>
+        <img
+          src="https://th.bing.com/th/id/OIP.nmtZm9mh31BuNEs75LbIowHaEo?o=7rm=3&rs=1&pid=ImgDetMain&cb=idpwebpc1"
+          alt="woman licking ice cream and smiling"
+          class="hero-lady-img mt-8 md:mt-0 md:ml-8 w-full md:w-1/2 h-auto"
+          loading="lazy"
+        />
+      </section>
+    </main>
+
+    
+    <section id="menu" class="py-16 px-4 text-white text-center">
+      <div class="container mx-auto">
+        <h2 class="text-4xl font-bold mb-10">View Menu</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-white bg-opacity-20 rounded-lg p-4 shadow-lg">
+            <img src="https://norecipes.com/wp-content/uploads/2017/05/chicken-biryani-006.jpg" alt="Burger" class="w-full h-48 object-cover rounded mb-4" />
+            <h3 class="text-xl font-semibold">Chicken Biryani</h3>
+            <p class="text-sm">Juicy and satisfying, made with fresh buns and veggies.</p>
+          </div>
+          <div class="bg-white bg-opacity-20 rounded-lg p-4 shadow-lg">
+            <img src="https://th.bing.com/th/id/OIP.z0IdlmH_RChTcj1qWTTxbQHaHa?w=184&h=184&c=7&r=0&o=7&pid=1.7&rm=3" alt="Pasta" class="w-full h-48 object-cover rounded mb-4" />
+            <h3 class="text-xl font-semibold">Chicken Fried Rice</h3>
+            <p class="text-sm">A bowl full of creamy delight with herbs and love.</p>
+          </div>
+          <div class="bg-white bg-opacity-20 rounded-lg p-4 shadow-lg">
+            <img src="https://tse2.mm.bing.net/th/id/OIP.9HdNj8GYwMgoN5DZji2jmQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Sandwich" class="w-full h-48 object-cover rounded mb-4" />
+            <h3 class="text-xl font-semibold">Chicken Shawarma</h3>
+            <p class="text-sm">Hot and crispy — perfect for a mid-class snack.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="contact" class="py-16 px-4 bg-white bg-opacity-10 text-white text-center">
+      <div class="container mx-auto max-w-2xl">
+        <h2 class="text-4xl font-bold mb-6">Contact Us</h2>
+       
+          <!-- Loader -->
+    <div id="form-loader" class="hidden text-center my-4">
+      <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-white mx-auto"></div>
+      <p class="mt-2">Sending your message...</p>
+    </div>
+        <form method="POST" action="{% url 'contact' %}" class="space-y-4">
+          {% csrf_token %}
+            <input type="text" placeholder="Your Name" class="w-full p-3 rounded bg-white bg-opacity-20 placeholder-white" required />
+            <input type="email" placeholder="Your Email" class="w-full p-3 rounded bg-white bg-opacity-20 placeholder-white" required />
+            <textarea rows="4" placeholder="Your Message" class="w-full p-3 rounded bg-white bg-opacity-20 placeholder-white" required></textarea>
+            <button type="submit"
+        class="bg-yellow-300 text-black font-semibold px-6 py-2 rounded hover:bg-yellow-400 transition">Send
+        Message</button>
+          </form>
+        
+
+      </div>
+    </section>
+    
+    <footer class="py-6 text-center text-white bg-black bg-opacity-30">
+      <p>&copy; 2026 eCanteen. All Rights Reserved.</p>
+    </footer>
+   
+
+    <script>
+      const menuToggle = document.querySelector('.menu-toggle');
+      const navbar = document.querySelector('.navbar');
+      menuToggle.addEventListener('click', () => {
+        navbar.classList.toggle('active');
+      });
+
+      const form = document.getElementById('contact-form');
+  const loader = document.getElementById('form-loader');
+
+  form.addEventListener('submit', function () {
+    loader.classList.remove('hidden');
+  });
+
+  
+  setTimeout(() => {
+    const msg = document.getElementById("success-message");
+    if (msg) {
+      msg.remove();
+    }
+  }, 2000);
+    </script>
+  </body>
+</html>
